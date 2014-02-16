@@ -20,9 +20,29 @@ function checkResult(questionID, answerIndex){
     return false;
 }
 
+// connect to database
+var Db = require('tingodb')().Db;
+var assert = require('assert');
+
+var db = new Db('./db', {});
+// Fetch a collection to insert document into
+var collection = db.collection("batch_document_insert_collection_safe");
+// Insert a single document
+collection.insert([{hello:'world_safe1'}
+  , {hello:'world_safe2'}], {w:1}, function(err, result) {
+  assert.equal(null, err);
+
+  // Fetch the document
+  collection.findOne({hello:'world_safe2'}, function(err, item) {
+    assert.equal(null, err);
+    assert.equal('world_safe2', item.hello);
+  })
+});
+
 
 // start up server
-var http = require('http'), fs = require('fs');
+var http = require('http');
+var fs = require('fs');
 var app = http.createServer(function (request, response) {
     fs.readFile("client.html", 'utf-8', function (error, data) {
         response.writeHead(200, {'Content-Type': 'text/html'});

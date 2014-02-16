@@ -14,10 +14,15 @@
 
                 var questions = "<hr/>";
                 for (var i=0; i < data['answers'].length; i++)
-                    questions += "<button onclick=submitAnswer(" + i + ")>" + data['answers'][i] + "</button>";
+                    questions += "<button onclick=submitAnswer()>" + data['answers'][i] + "</button>";
 
                 document.getElementById("answersArea").innerHTML = questions;
                 ++questionIndex;
+            });
+
+            $('#container').on('click', '.appbutton', function () {
+                var serverId = $(this).data('Id'); //this binds to html input
+                renameApplication(serverId);
             });
 
             var questionIndex = 0;
@@ -25,7 +30,7 @@
                 socketio.emit("next_question", {currentQuestion : questionIndex});
             }
 
-            function submitAnswer(i) {
+            function submitAnswer() {
                 socketio.emit("submit_answer", {answer : i});
             }
         </script>
@@ -36,8 +41,8 @@
         <div data-role="content">
             <button onclick="submitAnswer()">submit</button>
             <button onclick="getQuestion()">next question</button>
-            <div id="questionArea"></div>
-            <div id="answersArea"></div>
+            <div data-role="content" id="questionArea"></div>
+            <div data-role="content" id="answersArea"></div>
         </div>
     </div>
     </body>

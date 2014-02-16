@@ -38,7 +38,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('submit_answer', function(data) {
     	var answerIndex = data['answer'], questionID = data['questionID'];
-    	boolean correct = checkResult(questionID, answerIndex);
+    	var correct = checkResult(questionID, answerIndex);
         io.sockets.emit("result",{ result: correct ? "Correct" : "Wrong" });
     });
 });

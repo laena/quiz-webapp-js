@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            var socketio = io.connect("127.0.0.1:1337");
+            socketio.on("question", function(data) {
+                document.getElementById("questionArea").innerHTML = ("<hr/>" +
+                data['question']);
+
+                var questions = "<hr/>";
+                for (var i=0; i < data['answers'].length; i++)
+                    questions += "<button onclick=submitAnswer(" + i + ")>" + data['answers'][i] + "</button>";
+
+                document.getElementById("answersArea").innerHTML = questions;
+                ++questionIndex;
+            });
+
+            var questionIndex = 0;
+            function getQuestion() {
+                socketio.emit("next_question", {currentQuestion : questionIndex});
+            }
+
+            function submitAnswer(i) {
+                socketio.emit("submit_answer", {answer : i});
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="submitAnswer()">submit</button>
+        <button onclick="getQuestion()">next question</button>
+        <div id="questionArea"></div>
+        <div id="answersArea"></div>
+    </body>
+</html>

@@ -5,12 +5,6 @@ function question(ID, text, answers, correctAnswer) {
 	this.correctAnswer = correctAnswer;
 }
 
-var questions = new Array();
-questions[0] = new question(0, "What is 5+5?",  ["10", "11", "12", "Dogge"], 0);
-questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz :D"], 0);
-questions[2] = new question(2, "What's in it for me?",  ["Dunno", "Your Mother!", "Chocolate?", "Beer"], 0);
-questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
-
 function checkResult(questionID, answerIndex){
 	for (var i = 0; i < questions.length; ++i) {
 		if (questions[i].ID == questionID) {
@@ -20,25 +14,44 @@ function checkResult(questionID, answerIndex){
     return false;
 }
 
-// connect to database
+function questionToDocument(question) {
+    return {ID: question.ID, text: question.text, answers: question.answers, correctAnswer: question.correctAnswer};
+}
+
+function checkError(err) {
+  if (err != null)
+    console.log(err);
+  assert.equal(null, err);
+}
+
+// save data in database
 var Db = require('tingodb')().Db;
 var assert = require('assert');
 
 var db = new Db('./db', {});
-// Fetch a collection to insert document into
-var collection = db.collection("batch_document_insert_collection_safe");
-// Insert a single document
-collection.insert([{hello:'world_safe1'}
-  , {hello:'world_safe2'}], {w:1}, function(err, result) {
-  assert.equal(null, err);
+var collection = db.collection("quiz_db");
 
-  // Fetch the document
-  collection.findOne({hello:'world_safe2'}, function(err, item) {
-    assert.equal(null, err);
-    assert.equal('world_safe2', item.hello);
-  })
+var questions = new Array();
+questions[0] = new question(0, "What is 5+5?",  ["10", "11", "12", "Dogge"], 0);
+questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz :D"], 0);
+questions[2] = new question(2, "What's in it for me?",  ["Dunno", "Your Mother!", "Chocolate?", "Beer"], 0);
+questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
+
+questions.forEach(function(question){
+    collection.save(questionToDocument(question), checkError);
 });
 
+function loadQuestions(collection) {
+    dbquestions = new Array();
+    var cursor = collection.find({ID:0}, function(err, doc){
+        checkError(err);
+        doc.each(function(entry){
+            console.log(entry.ID);
+            dbquestions.push("...");
+        });
+    });
+    return dbquestions;
+}
 
 // start up server
 var http = require('http');
@@ -50,6 +63,8 @@ var app = http.createServer(function (request, response) {
         response.end();
     });
 }).listen(1337);
+
+questions = loadQuestions(collection);
 
 var io = require('socket.io').listen(app);
 

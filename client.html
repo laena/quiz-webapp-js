@@ -2,47 +2,98 @@
 <html>
     <head>
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+
         <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
 
         <script src="/socket.io/socket.io.js"></script>
         <script type="text/javascript">
+
+        	$( document ).ready(getQuestion);
+
             var socketio = io.connect("127.0.0.1:1337");
-            socketio.on("question", function(data) {
-                document.getElementById("questionArea").innerHTML = ("<hr/>" +
-                data['question']);
+            
+            socketio.on("new_question", 
+            	function(data) {
+            		$("#lbl_q").html(data['question']);
+	                for (var i=0; i < data['answers'].length; i++) {
+	                	setButtonText(i, data['answers'][i]);
+	                }	                
+	                setButtonsDisabled(false);
+	                setNextButtonVisible(false);
+	                clearAnswers();
+	            }
+            );
 
-                var questions = "<hr/>";
-                for (var i=0; i < data['answers'].length; i++)
-                    questions += "<button onclick=submitAnswer()>" + data['answers'][i] + "</button>";
+            socketio.on("result", 
+            	function(data) {
+            		if(data["result"] == 1) {
+						setAnswer(lastAnswer, true);
+            		} else {
+            			setAnswer(lastAnswer, false);
+            		}            		
 
-                document.getElementById("answersArea").innerHTML = questions;
-                ++questionIndex;
-            });
+            		setNextButtonVisible(true);
+	            }
+            );
 
-            $('#container').on('click', '.appbutton', function () {
-                var serverId = $(this).data('Id'); //this binds to html input
-                renameApplication(serverId);
-            });
-
-            var questionIndex = 0;
+            var questionIndex = -1;            
             function getQuestion() {
-                socketio.emit("next_question", {currentQuestion : questionIndex});
+                ++questionIndex;
+                socketio.emit("get_next_question", {currentQuestion : questionIndex});
             }
 
-            function submitAnswer() {
-                socketio.emit("submit_answer", {answer : i});
+            function setButtonText(bID, text) {
+            	$("#btn_a" + bID).prev(".ui-btn-inner").children(".ui-btn-text").html(text);
             }
+
+            function setAnswer(bID, b) {
+            	$("#btn_a" + bID).attr("data-icon", b ? "check" : "delete");
+            	$("#btn_a" + bID).buttonMarkup("refresh");
+            }
+
+            function clearAnswers() {
+            	for (var i = 0; i < 4; ++i) {
+            		$("#btn_a" + i).removeAttr("data-icon");
+            		$("#btn_a" + i).buttonMarkup("refresh");
+                };          
+            }
+
+           	function setNextButtonVisible(b) {
+           		if(b) {
+           			$("#btn_next").parent().show();	
+           		} else {
+           			$("#btn_next").parent().hide();
+           		}
+           	}
+
+            function setButtonsDisabled(b) {
+            	for (var i = 0; i < 4; ++i) {
+            		$("#btn_a" + i).attr("disabled", b);
+                };          
+            }
+
+            var lastAnswer = -1
+            function submitAnswer(index) {
+                socketio.emit("submit_answer", {answer : index, questionID : questionIndex});
+                
+                lastAnswer = index;
+
+				setButtonsDisabled(true);
+			}
+			
         </script>
     </head>
     <body>
     <div data-role="page">
         <div data-role="header">Quiz</div>
         <div data-role="content">
-            <button onclick="submitAnswer()">submit</button>
-            <button onclick="getQuestion()">next question</button>
-            <div data-role="content" id="questionArea"></div>
-            <div data-role="content" id="answersArea"></div>
+            <h1 id="lbl_q">next question</h1>
+            <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>
+            <button onclick="submitAnswer(1)" id="btn_a1">submit 2</button>
+            <button onclick="submitAnswer(2)" id="btn_a2">submit 3</button>
+            <button onclick="submitAnswer(3)" id="btn_a3">submit 4</button>
+            <button onclick="getQuestion()" id="btn_next">Next Question!</button>
         </div>
     </div>
     </body>

@@ -4,6 +4,23 @@ function question(ID, text, answers, correctAnswer) {
 	this.answers = answers;
 	this.correctAnswer = correctAnswer;
 }
+
+var questions = new Array();
+questions[0] = new question(0, "What is 5+5?",  ["10", "11", "12", "Dogge"], 0);
+questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz :D"], 0);
+questions[2] = new question(2, "What's in it for me?",  ["Dunno", "Your Mother!", "Chocolate?", "Beer"], 0);
+questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
+
+function checkResult(questionID, answerIndex){
+	for (var i = 0; i < questions.length; ++i) {
+		if (questions[i].ID == questionID) {
+			return answerIndex == questions[i].correctAnswer;
+		}
+	}
+    return false;
+}
+
+
 // start up server
 var http = require('http'), fs = require('fs');
 var app = http.createServer(function (request, response) {
@@ -14,31 +31,20 @@ var app = http.createServer(function (request, response) {
     });
 }).listen(1337);
 
-var questions = new Array();
-questions[0] = new question(0, "What is 5+5?",  [10, 11, 12], 0);
-questions[1] = new question(1, "What is 5+6?",  [10, 11, 12], 1);
-
-function checkResult(questionID, answerIndex){
-	for (var i = 0; i < questions.length; ++i) {
-		if (questions[i].ID == questionID) {
-			return answerIndex == questions[i].correctAnswer;
-		}
-	}
-}
-
 var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function(socket) {
-    socket.on('next_question', function(data) {
+    socket.on('get_next_question', function(data) {
     	var index = data['currentQuestion'];
     	if (index >= questions.length) return; // TODO error message
     	var current = questions[index];
-        io.sockets.emit("question", { question: current.text, answers: current.answers });
+        io.sockets.emit("new_question", { question: current.text, answers: current.answers });
     });
 
     socket.on('submit_answer', function(data) {
-    	var answerIndex = data['answer'], questionID = data['questionID'];
+    	var answerIndex = data['answer'];
+        var questionID = data['questionID'];
     	var correct = checkResult(questionID, answerIndex);
-        io.sockets.emit("result",{ result: correct ? "Correct" : "Wrong" });
+        io.sockets.emit("result", { result: correct ? 1 : 0});
     });
 });

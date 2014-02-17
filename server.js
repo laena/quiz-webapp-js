@@ -1,7 +1,11 @@
 var assert = require('assert');
 var http = require('http');
 var fs = require('fs');
-var dbengine = require('tingodb')()
+var dbengine = require('tingodb')();
+
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 
 function question(ID, text, answers, correctAnswer) {
     this.ID = ID;
@@ -55,17 +59,16 @@ function documentToQuestion(doc) {
 
 // start up server
 var app = http.createServer(function (request, response) {
-    //console.log(String(request.url));
     if (request.url == "/") {
         fs.readFile("client.html", 'utf-8', function (error, data) {
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(data);
             response.end();
         });
-    } else {
+    } else if (request.url.endsWith(".js")) {
         fs.readFile("."+String(request.url), 'utf-8', function (error, data) {
             if (error == null) {
-                response.writeHead(200, {'Content-Type': 'text/html'});
+                response.writeHead(200, {'Content-Type': 'application/javascript'});
                 response.write(data);
                 response.end();
             } else {
@@ -74,7 +77,6 @@ var app = http.createServer(function (request, response) {
             }
         });
     }
-    
 }).listen(1337);
 
 var io = require('socket.io').listen(app);

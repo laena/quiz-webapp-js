@@ -55,11 +55,26 @@ function documentToQuestion(doc) {
 
 // start up server
 var app = http.createServer(function (request, response) {
-    fs.readFile("client.html", 'utf-8', function (error, data) {
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write(data);
-        response.end();
-    });
+    //console.log(String(request.url));
+    if (request.url == "/") {
+        fs.readFile("client.html", 'utf-8', function (error, data) {
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.write(data);
+            response.end();
+        });
+    } else {
+        fs.readFile("."+String(request.url), 'utf-8', function (error, data) {
+            if (error == null) {
+                response.writeHead(200, {'Content-Type': 'text/html'});
+                response.write(data);
+                response.end();
+            } else {
+                console.log(error);
+                return;
+            }
+        });
+    }
+    
 }).listen(1337);
 
 var io = require('socket.io').listen(app);

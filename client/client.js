@@ -32,7 +32,8 @@ function client_init() {
 				setText("#lbl_login", "Invalid user name<br />Please try again:");
 			} else if (data["result"]) {
 				userToken = data["userToken"];
-				$( "#pop_login" ).popup("close");
+				localStorage.setItem("userToken", userToken);
+				$("#pop_login").popup("close");
 				$("body").pagecontainer("change", "#p_start", {});
 				getQuestion();
 			} else {
@@ -70,7 +71,7 @@ function getQuestion() {
 }
 
 function setText(id, text) {
-	$( id ).html(text);
+	$(id).html(text);
 }
 
 function setAnswer(bID, b) {
@@ -113,7 +114,7 @@ function logoutUser() {
 }
 
 function showLogin() {
-	$( "#pop_login" ).popup("open");
+	$("#pop_login").popup("open");
 }
 
 function setSession(token) {

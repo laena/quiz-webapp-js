@@ -32,7 +32,7 @@ function client_init() {
 				setTimeout(showInvalidLogin, 200);
 			} else if (data["result"]) {
 				userToken = data["userToken"];
-				$("body").pagecontainer("change", "#p_quiz", {});
+				$("body").pagecontainer("change", "#p_start", {});
 			} else {
 				$("body").pagecontainer("change", "#p_login", {});
 			}
@@ -41,11 +41,11 @@ function client_init() {
 
 	setTimeout(showLogin, 500);
 
-	getQuestion();
-	
 	userToken = localStorage.getItem("userToken");
 	if (userToken == null)
 		$("body").pagecontainer("change", "#p_login", {});
+	else
+		getQuestion();
 }
 
 function getQuestion() {
@@ -89,6 +89,12 @@ function loginUser() {
 	socketio.emit("login_user", {user : $("#inp_user").val(), password : $("#inp_passwd").val()});
 	$( "#pop_login" ).popup("close");
 	console.log("logging in: " + $("#inp_user").val() + " / " + $("#inp_passwd").val());
+}
+
+function logoutUser() {
+	localStorage.setItem("session", null);
+	userToken = null;
+	console.log("logging out");
 }
 
 function showLogin() {

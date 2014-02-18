@@ -5,7 +5,8 @@ var socketio = io.connect("127.0.0.1:1337");
 var userToken = null;
 
 function client_init() {
-	$( "#pop_login" ).popup();	
+	$("#pop_login").popup();
+	$("#pop_register").popup();	
 
 	socketio.on("new_question", 
 		function(data) {
@@ -116,4 +117,18 @@ function logoutUser() {
 
 function showLogin() {
 	$("#pop_login").popup("open");
+}
+
+function showRegister() {
+	$("#pop_login").popup("close");
+	setTimeout(function() {
+		$("#pop_register").popup("open");
+	}, 100);
+}
+
+function backToLogin() {
+	$("#pop_register").popup("close");
+	setTimeout(function() {
+		$("#pop_login").popup("open");
+	}, 100);	
 }

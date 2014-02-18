@@ -34,6 +34,7 @@ function client_init() {
 				userToken = data["userToken"];
 				$( "#pop_login" ).popup("close");
 				$("body").pagecontainer("change", "#p_start", {});
+				getQuestion();
 			} else {
 				setText("#lbl_login", "Invalid password<br />Please try again:");
 			}
@@ -57,10 +58,10 @@ function client_init() {
 	setTimeout(showLogin, 500);
 
 	userToken = localStorage.getItem("userToken");
-	if (userToken == null)
+	if (userToken == null) {
 		$("body").pagecontainer("change", "#p_login", {});
-	else
 		getQuestion();
+	}
 }
 
 function getQuestion() {

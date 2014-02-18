@@ -59,3 +59,8 @@ function submitAnswer(index) {
 	lastAnswer = index;
 	setButtonsDisabled(true);
 }
+
+function loginUser(user, password) {
+	$("form#form_login").submit();
+	//socketio.emit("login_user", {user : user, password : password});
+}

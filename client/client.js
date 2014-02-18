@@ -34,7 +34,7 @@ function client_init() {
 				userToken = data["userToken"];
 				$("body").pagecontainer("change", "#p_start", {});
 			} else {
-				$("body").pagecontainer("change", "#p_login", {});
+				setTimeout(showInvalidLogin, 200);
 			}
 		}
 	);	

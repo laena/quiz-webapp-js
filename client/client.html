@@ -46,19 +46,22 @@
         <div role="main" class="ui-content">
             <h1 id="lbl_l">Login</h1>
             <form method="post" id="form_login">
-              <div class="ui-field-contain">
+              <div class="ui-content">
                 <label for="usrnm" class="ui-hidden-accessible">Username:</label>
-                <input type="text" name="user" id="usrnm" placeholder="Username">
+                <input type="text" name="user" id="inp_user" placeholder="Username"/>
                 <label for="pswd" class="ui-hidden-accessible">Password:</label>
-                <input type="password" name="password" id="pswd" placeholder="Password">
-                <button onclick="loginUser()" id="btn_login">Login</button>
-                <input type="reset" value="Reset">
+                <input type="password" name="password" id="inp_passwd" placeholder="Password">
+                <input type="submit" value="Submit" onclick="loginUser()"/>
+                
+                <input type="reset" value="Reset"/>
                 <button onclick="newUser()" id="btn_register">Register</button>
               </div>
             </form>
         </div>
         <div data-role="footer">Ads go here! :)</div>
     </div>
+
+    <div data-role="popup" id="popup" data-overlay-theme="a"/>
 
     </body>
 

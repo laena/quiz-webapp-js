@@ -15,12 +15,18 @@ function question(ID, text, answers, correctAnswer) {
     this.correctAnswer = correctAnswer;
 }
 
+function user(username, password, email) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+}
+
 // ------------------------------------------------------------------------- //
 //                            database stuff                                 //
 // ------------------------------------------------------------------------- //
 
 var db = new dbengine.Db('./db', {});
-var collection = db.collection("quiz_db");
+var quizCollection = db.collection("quiz_db");
 
 function fillDB() {        
     var questions = new Array();
@@ -30,16 +36,14 @@ function fillDB() {
     questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
 
     questions.forEach(function(question){
-        collection.update({ID: question.ID}, questionToDocument(question), {upsert:true});
+        quizCollection.update({ID: question.ID}, questionToDocument(question), {upsert:true});
     });
 }
 
-collection.findOne({ID: 0}, function(err, item) {
-    fillDB();
-});
+fillDB();
 
 function loadQuestion(id, callback) {
-    collection.findOne({ID: id}, function(err, item) {
+    quizCollection.findOne({ID : id}, function(err, item) {
         if (err) {
             console.log("Cannot find Question with ID: " + id);
             return;
@@ -57,11 +61,29 @@ function documentToQuestion(doc) {
 }
 
 // ------------------------------------------------------------------------- //
+//                     authentication                                        //
+// ------------------------------------------------------------------------- //
+
+var userCollection = db.collection("user_db");
+
+function loginUser(user, password, callback) {
+    userCollection.findOne({username : user} , function(err, item) {
+        if (err) {
+            callback("unknown user");
+            return;
+        }
+        console.log(item);
+        callback(item.password == password);
+    });
+}
+
+// ------------------------------------------------------------------------- //
 //                     server communication stuff                            //
 // ------------------------------------------------------------------------- //
 
 // start up server
 var app = http.createServer(function (request, response) {
+    console.log(request);
     if (request.method == "POST") {
         var body = '';
         request.on('data', function (data) {
@@ -69,10 +91,10 @@ var app = http.createServer(function (request, response) {
         });
         request.on('end', function () {
             var posted = qs.parse(body);
-            //console.log(posted);
             var username = posted["user"];
             var password = posted["password"];
             console.log(username, password);
+            loginUser(username, password);
         });
     } else { // This should not happen
         response.writeHead(404);
@@ -94,6 +116,12 @@ io.sockets.on('connection', function(socket) {
     socket.on('submit_answer', function(data) {
         loadQuestion(data['questionID'], function(current) {
             io.sockets.emit("result", { result: current.correctAnswer == data['answer'] ? 1 : 0});
+        });
+    });
+
+    socket.on('login_user', function(data) {
+        loginUser(data['user'], data['password'], function(current) {
+            io.sockets.emit("login_result", { result: current });
         });
     });
 });

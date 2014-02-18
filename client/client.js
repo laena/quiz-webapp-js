@@ -22,6 +22,15 @@ function client_init() {
 		}
 	);
 
+	socketio.on("login_result", 
+		function(data) {
+			if (data["result"] == "unknown user") {
+				console.log(data);
+				displayPopup("User not found.");
+			}
+		}
+	);
+
 	getQuestion();
 }
 
@@ -63,5 +72,11 @@ function submitAnswer(index) {
 }
 
 function loginUser() {
-	$("form#form_login").submit();
+	console.log("logging in");
+	socketio.emit("login_user", {user : $("#inp_user").val(), password : $("#inp_passwd").val()});
+}
+
+function displayPopup(msg) {
+	$("#popup").html(msg);
+	$("#popup").popup("open", {});
 }

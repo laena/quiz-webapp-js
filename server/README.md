@@ -10,4 +10,4 @@
 ### Getting Startet
 
 - npm install
-- node main.js
+- node server.js

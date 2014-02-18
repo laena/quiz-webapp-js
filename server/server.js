@@ -74,28 +74,7 @@ var app = http.createServer(function (request, response) {
             var password = posted["password"];
             console.log(username, password);
         });
-    }
-    if (request.url == "/") {
-        fs.readFile("client.html", 'utf-8', function (error, data) {
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            response.write(data);
-            response.end();
-        });
-    } else if (request.url.endsWith(".js") || request.url.endsWith(".css")) {
-        // TODO: create a list of requesteable documents, ignore the rest.
-        fs.readFile("."+String(request.url), 'utf-8', function (error, data) {
-            if (error == null) {
-                response.writeHead(200, {'Content-Type': 'application/javascript'});
-                response.write(data);
-                response.end();
-            } else {
-                console.log(error);
-                response.writeHead(404);
-                response.write("Not Found");
-                response.end();
-            }
-        });
-    } else {
+    } else { // This should not happen
         response.writeHead(404);
         response.write("Not Found");
         response.end();

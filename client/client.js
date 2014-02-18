@@ -60,7 +60,6 @@ function submitAnswer(index) {
 	setButtonsDisabled(true);
 }
 
-function loginUser(user, password) {
+function loginUser() {
 	$("form#form_login").submit();
-	//socketio.emit("login_user", {user : user, password : password});
 }

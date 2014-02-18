@@ -3,7 +3,7 @@ var http = require('http');
 var fs = require('fs');
 var dbengine = require('tingodb')();
 var qs = require('querystring');
-var crypto = require('crypto');
+var hat = require('hat');
 
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -99,9 +99,7 @@ function registerUser(user, password, callback) {
 }
 
 function generateUserToken(user) {
-    crypto.randomBytes(48, function(ex, buf) {
-        return buf.toString('hex');
-    });
+    return hat();
 }
 
 // ------------------------------------------------------------------------- //
@@ -142,6 +140,6 @@ io.sockets.on('connection', function(socket) {
 });
 
 function checkToken(token) {
-    console.log(token);
-    return true; // TODO
+    console.log("Checking token: " + token);
+    return activeTokens.indexOf(token) != -1;
 }

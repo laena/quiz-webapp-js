@@ -2,6 +2,6 @@
   "dependencies": {
     "socket.io": "*",
     "tingodb": "*",
-    "crypto": "*"
+    "hat": "*"
   }
 }

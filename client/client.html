@@ -19,7 +19,7 @@
     <body onload="client_init()">
 
     <div data-role="page" id="p_start">
-        <div data-role="header">Quiz</div>
+        <div data-role="header"><h2>Quiz</h2></div>
         <div role="main" class="ui-content">
             <h1>Welcome to the quiz!</h1>
             <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">GO</a></p>
@@ -29,7 +29,11 @@
     </div>
 
     <div data-role="page" id="p_quiz">
-        <div data-role="header">Quiz</div>
+        <div data-role="header">
+            <h2>Quiz</h2>
+            <a href="#p_login" class="ui-btn-right" data-icon="home" data-iconpos="notext" 
+           data-direction="reverse"></a>  
+        </div>
         <div role="main" class="ui-content">
             <h1 id="lbl_q">next question</h1>
             <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>
@@ -42,10 +46,9 @@
     </div>
 
     <div data-role="page" id="p_login">
-        <div data-role="header">Quiz</div>
+        <div data-role="header"><h2>Quiz</h2></div>
         <div role="main" class="ui-content">
             <h1 id="lbl_l">Login</h1>
-            <form method="post" id="form_login">
               <div class="ui-content">
                 <label for="usrnm" class="ui-hidden-accessible">Username:</label>
                 <input type="text" name="user" id="inp_user" placeholder="Username"/>
@@ -56,12 +59,13 @@
                 <input type="reset" value="Reset"/>
                 <button onclick="newUser()" id="btn_register">Register</button>
               </div>
-            </form>
         </div>
         <div data-role="footer">Ads go here! :)</div>
     </div>
 
-    <div data-role="popup" id="popup" data-overlay-theme="a"/>
+    <div data-role="popup" id="popup" data-overlay-theme="a">
+        <label id="lbl_popup"></label>
+    </div>
 
     </body>
 

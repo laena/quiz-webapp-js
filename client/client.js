@@ -29,15 +29,30 @@ function client_init() {
 	socketio.on("login_result", 
 		function(data) {
 			if (data["result"] == "unknown user") {
-				setTimeout(showInvalidLogin, 200);
+				setText("#lbl_login", "Invalid user name<br />Please try again:");
 			} else if (data["result"]) {
 				userToken = data["userToken"];
+				$( "#pop_login" ).popup("close");
 				$("body").pagecontainer("change", "#p_start", {});
 			} else {
-				setTimeout(showInvalidLogin, 200);
+				setText("#lbl_login", "Invalid password<br />Please try again:");
 			}
 		}
 	);	
+
+	$('#inp_user').keydown( function(e) {
+        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+        if(key == 13) {
+        	loginUser();
+        }
+    });
+
+    $('#inp_passwd').keydown( function(e) {
+        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+        if(key == 13) {
+        	loginUser();
+        }
+    });
 
 	setTimeout(showLogin, 500);
 
@@ -86,25 +101,17 @@ function submitAnswer(index) {
 }
 
 function loginUser() {
-	socketio.emit("login_user", {user : $("#inp_user").val(), password : $("#inp_passwd").val()});
-	$( "#pop_login" ).popup("close");
-	console.log("logging in: " + $("#inp_user").val() + " / " + $("#inp_passwd").val());
+	socketio.emit("login_user", {user : $("#inp_user").val(), password : $("#inp_passwd").val()});	
 }
 
 function logoutUser() {
 	localStorage.setItem("session", null);
 	userToken = null;
 	console.log("logging out");
+	setTimeout(showLogin, 500);
 }
 
 function showLogin() {
-	setText("#lbl_login", "Please login:");
-	$( "#pop_login" ).popup("open");
-}
-
-function showInvalidLogin() {
-	console.log("here");
-	setText("#lbl_login", "Invalid Login<br />Please try again:");
 	$( "#pop_login" ).popup("open");
 }
 

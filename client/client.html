@@ -22,7 +22,10 @@
 	        <div data-role="header"><h2>Quiz</h2></div>
 	        <div role="main" class="ui-content">
 	            <h1>Welcome to the quiz!</h1>
-	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">GO</a></p>
+	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Monoell</a></p>
+	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Duell</a></p>
+	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Triell</a></p>
+	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Statistics</a></p>
 	        </div>
 	        <div data-role="footer">Ads go here! :)</div>
 	    </div>
@@ -31,8 +34,8 @@
 	        <div data-role="header">
                 <h2>Quiz</h2>
                 <div class="ui-btn-right">
-                    <a href="#p_start" data-role="button" data-icon="home"  data-iconpos="notext" data-transition="flip"></a>
-                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser();showLogin();"></a>
+                    <a href="#p_start" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
+                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser()"></a>
                 </div> 
             </div>
 	        <div role="main" class="ui-content">
@@ -46,7 +49,7 @@
 	        <div data-role="footer">Ads go here! :)</div>
 	    </div>
 
-		<div data-role="popup" id="pop_login" data-theme="a" class="ui-corner-all">
+		<div data-role="popup" id="pop_login" data-theme="a" class="ui-corner-all" data-dismissible="false">
 	        <div style="padding:10px 20px;">
 	            <h3 id="lbl_login">Please sign in</h3>
 	            <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">

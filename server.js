@@ -29,12 +29,12 @@ function fillDB() {
     questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
 
     questions.forEach(function(question){
-        collection.insert(questionToDocument(question));
+        collection.update({}, questionToDocument(question), {upsert:true});
     });
 }
 
 collection.findOne({ID: 0}, function(err, item) {
-    if(item == null) {
+    if (item == null) {
         fillDB();
     }
 });
@@ -66,7 +66,8 @@ var app = http.createServer(function (request, response) {
             response.write(data);
             response.end();
         });
-    } else if (request.url.endsWith(".js")) {
+    } else if (request.url.endsWith(".js") || request.url.endsWith(".css")) {
+        // TODO: create a list of requesteable documents, ignore the rest.
         fs.readFile("."+String(request.url), 'utf-8', function (error, data) {
             if (error == null) {
                 response.writeHead(200, {'Content-Type': 'application/javascript'});
@@ -74,9 +75,15 @@ var app = http.createServer(function (request, response) {
                 response.end();
             } else {
                 console.log(error);
-                return;
+                response.writeHead(404);
+                response.write("Not Found");
+                response.end();
             }
         });
+    } else {
+        response.writeHead(404);
+        response.write("Not Found");
+        response.end();
     }
 }).listen(1337);
 

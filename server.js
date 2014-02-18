@@ -59,6 +59,7 @@ function documentToQuestion(doc) {
 
 // start up server
 var app = http.createServer(function (request, response) {
+    console.log(request.url);
     if (request.url == "/") {
         fs.readFile("client.html", 'utf-8', function (error, data) {
             response.writeHead(200, {'Content-Type': 'text/html'});

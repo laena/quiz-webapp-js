@@ -29,18 +29,20 @@ function fillDB() {
     questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
 
     questions.forEach(function(question){
-        collection.update({}, questionToDocument(question), {upsert:true});
+        collection.update({ID: question.ID}, questionToDocument(question), {upsert:true});
     });
 }
 
 collection.findOne({ID: 0}, function(err, item) {
-    if (item == null) {
-        fillDB();
-    }
+    fillDB();
 });
 
 function loadQuestion(id, callback) {
     collection.findOne({ID: id}, function(err, item) {
+        if (err) {
+            console.log("Cannot find Question with ID: " + id);
+            return;
+        }
         callback(documentToQuestion(item));
      })
 }

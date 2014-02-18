@@ -66,24 +66,21 @@
 
         <div data-role="popup" id="pop_register" data-theme="a" class="ui-corner-all" data-dismissible="false">
             <div style="padding:10px 20px;">
-                <h3 id="lbl_login">Please sign in</h3>
+                <h3 id="lbl_register">Please sign in</h3>
                 <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="text" id="inp_user" value="" placeholder="username" />
+                    <input type="text" id="inp_user_reg" value="" placeholder="username" />
                 </div>
                 <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="password" id="inp_passwd" value="" placeholder="password" />
+                    <input type="password" id="inp_passwd_reg" value="" placeholder="password" />
                 </div>
                 <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="password" id="inp_passwd" value="" placeholder="repeated password" />
+                    <input type="password" id="inp_passwd_reg_rptd" value="" placeholder="repeated password" />
                 </div>
                 <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check" onclick="registerUser()">Register</button>
 
                 <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a" onclick="backToLogin()">Cancel</button>
-
             </div>
         </div>
-
-
 	</body>
 
 </html>

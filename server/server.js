@@ -90,12 +90,13 @@ function loginUser(user, password, callback) {
 function registerUser(user, password, callback) {
     userCollection.findOne({username : user} , function(err, item) {
         if (err == null && item != null) {
-            callback("user exists");
+            return callback(false);
             return;
+        } else {
+            userCollection.save({username : user, password : password}, {save:true});
+            callback(true);
         }
     });
-    userCollection.save({username : user, password : password}, {save:true});
-    callback(true);
 }
 
 function generateUserToken(user) {
@@ -135,6 +136,12 @@ io.sockets.on('connection', function(socket) {
     socket.on('login_user', function(data) {
         loginUser(data['user'], data['password'], function(current, token) {
             io.sockets.emit("login_result", { result : current, userToken : token});
+        });
+    });
+
+    socket.on('register_user', function(data) {
+        registerUser(data['user'], data['password'], function(current, token) {
+            io.sockets.emit("register_result", { result : current });
         });
     });
 });

@@ -41,6 +41,17 @@ function client_init() {
 				setText("#lbl_login", "Invalid password<br />Please try again:");
 			}
 		}
+	);
+
+	socketio.on("register_result", 
+		function(data) {
+			if (data["result"] == true) {
+				setText("#lbl_login", "Registration successful.<br/>Please sign in:");
+				backToLogin();
+			} else {
+				setText("#lbl_register", "Registration failed.<br/>Please try again:");
+			}
+		}
 	);	
 
 	$('#inp_user').keydown( function(e) {
@@ -131,4 +142,14 @@ function backToLogin() {
 	setTimeout(function() {
 		$("#pop_login").popup("open");
 	}, 100);	
+}
+
+function registerUser() {
+	if ($("#inp_passwd_reg").val() != $("#inp_passwd_reg_rptd").val()) {
+		setText("#lbl_register", "Passwords unequal.<br />Please try again:");
+		setText("#inp_passwd_reg", "");
+		setText("#inp_passwd_reg_rptd", "");
+	} else {
+		socketio.emit("register_user", {user : $("#inp_user_reg").val(), password : $("#inp_passwd_reg").val()});
+	}	
 }

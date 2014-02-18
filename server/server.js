@@ -16,7 +16,8 @@ function question(ID, text, answers, correctAnswer) {
     this.correctAnswer = correctAnswer;
 }
 
-function user(username, password, email) {
+function user(ID, username, password, email) {
+    this.ID = ID;
     this.username = username;
     this.password = password;
     this.email = email;
@@ -29,7 +30,7 @@ function user(username, password, email) {
 var db = new dbengine.Db('./db', {});
 var quizCollection = db.collection("quiz_db");
 
-function fillDB() {        
+function fillDBIfEmpty() {        
     var questions = new Array();
     questions[0] = new question(0, "What is 5+5?",  ["10", "11", "12", "Dogge"], 0);
     questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz :D"], 0);
@@ -41,7 +42,7 @@ function fillDB() {
     });
 }
 
-fillDB();
+fillDBIfEmpty();
 
 function loadQuestion(id, callback) {
     quizCollection.findOne({ID : id}, function(err, item) {
@@ -62,7 +63,7 @@ function documentToQuestion(doc) {
 }
 
 // ------------------------------------------------------------------------- //
-//                     authentication                                        //
+//                            authentication                                 //
 // ------------------------------------------------------------------------- //
 
 var userCollection = db.collection("user_db");

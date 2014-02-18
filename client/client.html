@@ -18,55 +18,41 @@
 
     <body onload="client_init()">
 
-    <div data-role="page" id="p_start">
-        <div data-role="header"><h2>Quiz</h2></div>
-        <div role="main" class="ui-content">
-            <h1>Welcome to the quiz!</h1>
-            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">GO</a></p>
-            <p><a href="#p_login" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">LOGIN</a></p>
-        </div>
-        <div data-role="footer">Ads go here! :)</div>
-    </div>
+	    <div data-role="page" id="p_start">
+	        <div data-role="header">Quiz</div>
+	        <div role="main" class="ui-content">
+	            <h1>Welcome to the quiz!</h1>
+	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">GO</a></p>
+	        </div>
+	        <div data-role="footer">Ads go here! :)</div>
+	    </div>
 
-    <div data-role="page" id="p_quiz">
-        <div data-role="header">
-            <h2>Quiz</h2>
-            <a href="#p_login" class="ui-btn-right" data-icon="home" data-iconpos="notext" 
-           data-direction="reverse"></a>  
-        </div>
-        <div role="main" class="ui-content">
-            <h1 id="lbl_q">next question</h1>
-            <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>
-            <button onclick="submitAnswer(1)" id="btn_a1">submit 2</button>
-            <button onclick="submitAnswer(2)" id="btn_a2">submit 3</button>
-            <button onclick="submitAnswer(3)" id="btn_a3">submit 4</button>
-            <button onclick="getQuestion()" id="btn_next">Next Question!</button>
-        </div>
-        <div data-role="footer">Ads go here! :)</div>
-    </div>
+	    <div data-role="page" id="p_quiz">
+	        <div data-role="header">Quiz</div>
+	        <div role="main" class="ui-content">
+	            <h1 id="lbl_q">next question</h1>
+	            <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>
+	            <button onclick="submitAnswer(1)" id="btn_a1">submit 2</button>
+	            <button onclick="submitAnswer(2)" id="btn_a2">submit 3</button>
+	            <button onclick="submitAnswer(3)" id="btn_a3">submit 4</button>
+	            <button onclick="getQuestion()" id="btn_next">Next Question!</button>
+	        </div>
+	        <div data-role="footer">Ads go here! :)</div>
+	    </div>
 
-    <div data-role="page" id="p_login">
-        <div data-role="header"><h2>Quiz</h2></div>
-        <div role="main" class="ui-content">
-            <h1 id="lbl_l">Login</h1>
-              <div class="ui-content">
-                <label for="usrnm" class="ui-hidden-accessible">Username:</label>
-                <input type="text" name="user" id="inp_user" placeholder="Username"/>
-                <label for="pswd" class="ui-hidden-accessible">Password:</label>
-                <input type="password" name="password" id="inp_passwd" placeholder="Password">
-                <input type="submit" value="Submit" onclick="loginUser()"/>
-                
-                <input type="reset" value="Reset"/>
-                <button onclick="newUser()" id="btn_register">Register</button>
-              </div>
-        </div>
-        <div data-role="footer">Ads go here! :)</div>
-    </div>
+		<div data-role="popup" id="pop_login" data-theme="a" class="ui-corner-all">
+	        <div style="padding:10px 20px;">
+	            <h3 id="lbl_login">Please sign in</h3>
+	            <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+	               	<input type="text" id="inp_user" value="" placeholder="username" />
+	            </div>
+	            <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+		            <input type="password" id="inp_passwd" value="" placeholder="password" />
+		        </div>
+	            <button type="submit" onclick="loginUser()" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check">Sign in</button>
+	        </div>
+		</div>
 
-    <div data-role="popup" id="popup" data-overlay-theme="a">
-        <label id="lbl_popup"></label>
-    </div>
-
-    </body>
+	</body>
 
 </html>

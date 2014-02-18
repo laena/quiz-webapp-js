@@ -56,11 +56,12 @@ function client_init() {
         }
     });
 
-	setTimeout(showLogin, 500);
-
 	userToken = localStorage.getItem("userToken");
 	if (userToken == null) {
 		$("body").pagecontainer("change", "#p_login", {});
+		setTimeout(showLogin, 500);
+	} else  {
+		console.log("user token:" + userToken);
 		getQuestion();
 	}
 }
@@ -107,7 +108,7 @@ function loginUser() {
 }
 
 function logoutUser() {
-	localStorage.setItem("session", null);
+	localStorage.removeItem("userToken");
 	userToken = null;
 	console.log("logging out");
 	setTimeout(showLogin, 500);
@@ -115,10 +116,4 @@ function logoutUser() {
 
 function showLogin() {
 	$("#pop_login").popup("open");
-}
-
-function setSession(token) {
-	console.log("setting session token: " + token);
-	localStorage.setItem("session", token);
-	$("body").pagecontainer("change", "#p_quiz", {});
 }

@@ -3,6 +3,7 @@ var http = require('http');
 var fs = require('fs');
 var dbengine = require('tingodb')();
 var qs = require('querystring');
+var crypto = require('crypto');
 
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -65,15 +66,40 @@ function documentToQuestion(doc) {
 // ------------------------------------------------------------------------- //
 
 var userCollection = db.collection("user_db");
+userCollection.update({username : "admin"}, {username : "admin", password : "admin"}, {upsert:true});
+
+var activeTokens = new Array();
 
 function loginUser(user, password, callback) {
     userCollection.findOne({username : user} , function(err, item) {
         if (err) {
-            callback("unknown user");
+            callback("unknown user", null);
             return;
         }
         console.log(item);
-        callback(item.password == password);
+        if (item.password == password) {
+            var token = generateUserToken(user);
+            activeTokens.push(token);
+            console.log("active tokens: " + token);
+            callback(true, token); // success
+        } else return callback(false, null); // invalid password
+    });
+}
+
+function registerUser(user, password, callback) {
+    userCollection.findOne({username : user} , function(err, item) {
+        if (err == null && item != null) {
+            callback("user exists");
+            return;
+        }
+    });
+    userCollection.save({username : user, password : password}, {save:true});
+    callback(true);
+}
+
+function generateUserToken(user) {
+    crypto.randomBytes(48, function(ex, buf) {
+        return buf.toString('hex');
     });
 }
 
@@ -95,19 +121,26 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('get_next_question', function(data) {
         loadQuestion(data['currentQuestion'], function(current) {
-            io.sockets.emit("new_question", { question: current.text, answers: current.answers });
+            if (checkToken(data['userToken']))
+                io.sockets.emit("new_question", { question: current.text, answers: current.answers });
         });
     });
 
     socket.on('submit_answer', function(data) {
         loadQuestion(data['questionID'], function(current) {
-            io.sockets.emit("result", { result: current.correctAnswer == data['answer'] ? 1 : 0});
+            if (checkToken(data['userToken']))
+                io.sockets.emit("result", { result: current.correctAnswer == data['answer'] ? 1 : 0});
         });
     });
 
     socket.on('login_user', function(data) {
-        loginUser(data['user'], data['password'], function(current) {
-            io.sockets.emit("login_result", { result: current });
+        loginUser(data['user'], data['password'], function(current, token) {
+            io.sockets.emit("login_result", { result : current, userToken : token});
         });
     });
 });
+
+function checkToken(token) {
+    console.log(token);
+    return true; // TODO
+}

@@ -2,6 +2,8 @@ var questionIndex = -1;
 var lastAnswer = -1;
 var socketio = io.connect("127.0.0.1:1337");
 
+var userToken = null;
+
 function client_init() {
 	socketio.on("new_question", 
 		function(data) {
@@ -25,18 +27,26 @@ function client_init() {
 	socketio.on("login_result", 
 		function(data) {
 			if (data["result"] == "unknown user") {
-				console.log(data);
 				displayPopup("User not found.");
+			} else if (data["result"]) {
+				userToken = data["userToken"];
+				$("body").pagecontainer("change", "#p_quiz", {});
+			} else {
+				$("body").pagecontainer("change", "#p_login", {});
 			}
 		}
 	);
 
 	getQuestion();
+	
+	userToken = localStorage.getItem("userToken");
+	if (userToken == null)
+		$("body").pagecontainer("change", "#p_login", {});
 }
 
 function getQuestion() {
 	++questionIndex;
-	socketio.emit("get_next_question", {currentQuestion : questionIndex});
+	socketio.emit("get_next_question", {currentQuestion : questionIndex, userToken : userToken});
 }
 
 function setButtonText(bID, text) {
@@ -66,7 +76,7 @@ function setButtonsDisabled(b) {
 }
 
 function submitAnswer(index) {
-	socketio.emit("submit_answer", {answer : index, questionID : questionIndex});
+	socketio.emit("submit_answer", {answer : index, questionID : questionIndex, userToken : userToken});
 	lastAnswer = index;
 	setButtonsDisabled(true);
 }
@@ -79,4 +89,10 @@ function loginUser() {
 function displayPopup(msg) {
 	$("#popup").html(msg);
 	$("#popup").popup("open", {});
+}
+
+function setSession(token) {
+	console.log("setting session token: " + token);
+	localStorage.setItem("session", token);
+	$("body").pagecontainer("change", "#p_quiz", {});
 }

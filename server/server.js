@@ -84,23 +84,9 @@ function loginUser(user, password, callback) {
 // start up server
 var app = http.createServer(function (request, response) {
     console.log(request);
-    if (request.method == "POST") {
-        var body = '';
-        request.on('data', function (data) {
-            body += data;
-        });
-        request.on('end', function () {
-            var posted = qs.parse(body);
-            var username = posted["user"];
-            var password = posted["password"];
-            console.log(username, password);
-            loginUser(username, password);
-        });
-    } else { // This should not happen
-        response.writeHead(404);
-        response.write("Not Found");
-        response.end();
-    }
+    response.writeHead(404);
+    response.write("Not Found");
+    response.end();
 }).listen(1337);
 
 var io = require('socket.io').listen(app);

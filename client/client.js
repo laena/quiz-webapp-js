@@ -36,11 +36,13 @@ function setButtonText(bID, text) {
 
 function setAnswer(bID, b) {
 	$("#btn_a" + bID).buttonMarkup({icon: b ? "check" : "delete"});
+	$("#btn_a" + bID).buttonMarkup({theme: b ? "c" : "b"});
 }
 
 function clearAnswers() {
 	for (var i = 0; i < 4; ++i) {
 		$("#btn_a" + i).buttonMarkup({icon: ""});
+		$("#btn_a" + i).buttonMarkup({theme: "a"});
 	};          
 }
 

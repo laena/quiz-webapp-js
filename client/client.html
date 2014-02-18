@@ -19,7 +19,7 @@
     <body onload="client_init()">
 
 	    <div data-role="page" id="p_start">
-	        <div data-role="header">Quiz</div>
+	        <div data-role="header"><h2>Quiz</h2></div>
 	        <div role="main" class="ui-content">
 	            <h1>Welcome to the quiz!</h1>
 	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">GO</a></p>
@@ -28,7 +28,13 @@
 	    </div>
 
 	    <div data-role="page" id="p_quiz">
-	        <div data-role="header">Quiz</div>
+	        <div data-role="header">
+                <h2>Quiz</h2>
+                <div class="ui-btn-right">
+                    <a href="#p_start" data-role="button" data-icon="home"  data-iconpos="notext" data-transition="flip"></a>
+                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser();showLogin();"></a>
+                </div> 
+            </div>
 	        <div role="main" class="ui-content">
 	            <h1 id="lbl_q">next question</h1>
 	            <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>

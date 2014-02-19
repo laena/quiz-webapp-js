@@ -1,112 +1,122 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Quiz</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<link rel="stylesheet" href="css/basic.min.css" />
-		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
-		<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
-		<link rel="stylesheet" href="css/jclient.custom.css" />
-        <!--<link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css">-->
+    <title>Quiz</title>
 
-        <script type="application/javascript" language="javascript" src="jquery-1.10.2.min.js"></script>
-        <script type="application/javascript" language="javascript" src="jquery.mobile-1.4.1.min.js"></script>
-        <script type="application/javascript" language="javascript" src="socket.io.min.js"></script>
-        <script type="application/javascript" language="javascript" src="client.js"></script>
-    </head>
+    <!-- STYLE -->
+    <link rel="stylesheet" href="css/basic.min.css" />
+    <link rel="stylesheet" href="css/client.custom.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
+    <!-- <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css"> -->
 
-    <body onload="client_init()">
+    <!-- SCRIPTS -->
+    <script type="application/javascript" language="javascript" src="thirdparty/jquery-1.10.2.min.js"></script>
+    <script type="application/javascript" language="javascript" src="thirdparty/jquery.mobile-1.4.1.min.js"></script>
+    <script type="application/javascript" language="javascript" src="thirdparty/socket.io.min.js"></script>
+    <script type="application/javascript" language="javascript" src="client.js"></script>
+  </head>
 
-	    <div data-role="page" id="p_start">
-	        <div data-role="header"><h2>Quiz</h2></div>
-	        <div role="main" class="ui-content">
-	            <h1>Welcome to the quiz!</h1>
-	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Single Player</a></p>
-	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Duell</a></p>
-	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Triell</a></p>
-	            <p><a href="#p_statistics" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Statistics</a></p>
-	        </div>
-	        <div data-role="footer">Ads go here! :)</div>
-	    </div>
+  <body onload="initializeClient()">
 
-	    <div data-role="page" id="p_quiz">
-	        <div data-role="header">
-                <h2>Quiz</h2>
-                <div class="ui-btn-right">
-                    <a href="#p_start" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
-                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser()"></a>
-                </div> 
-            </div>
-	        <div role="main" class="ui-content">
-	            <h1 id="lbl_q">next question</h1>
-	            <button onclick="submitAnswer(0)" id="btn_a0">submit 1</button>
-	            <button onclick="submitAnswer(1)" id="btn_a1">submit 2</button>
-	            <button onclick="submitAnswer(2)" id="btn_a2">submit 3</button>
-	            <button onclick="submitAnswer(3)" id="btn_a3">submit 4</button>
-	            <button onclick="getQuestion()" id="btn_next">Next Question!</button>
-	        </div>
-	        <div data-role="footer">Ads go here! :)</div>
-	    </div>
+    <!-- 
+      startPage
+    -->
+    <div data-role="page" id="startPage">
+      <div data-role="header"><h2>Quiz</h2></div>
+      <div role="main" class="ui-content">
+        <h1>Welcome to the quiz!</h1>
+        <p><a href="#singlePlayerQuizPage" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Single Player</a></p>
+        <p><a href="#singlePlayerQuizPage" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Duell</a></p>
+        <p><a href="#singlePlayerQuizPage" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Triell</a></p>
+        <p><a href="#statisticsPage" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Statistics</a></p>
+      </div>
+      <div data-role="footer">Ads go here! :)</div>
+    </div>
 
-	    <div data-role="page" id="p_statistics">
-	        <div data-role="header">
-                <h2>Quiz</h2>
-                <div class="ui-btn-right">
-                    <a href="#p_start" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
-                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser()"></a>
-                </div> 
-            </div>
-	        <div role="main" class="ui-content">
-	            <h1 id="lbl_q">Highscore</h1>
-	            <table data-role="table" id="highscore_table" data-mode="column toggle">
-				  <thead>
-				    <tr>
-				      <th>Score</th>
-				      <th>Date</th>
-				      <th>Username</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				  </tbody>
-				</table>
-	        </div>
-	        <div data-role="footer">Ads go here! :)</div>
-	    </div>
+    <!-- 
+      singlePlayerQuizPage 
+    -->
+    <div data-role="page" id="singlePlayerQuizPage">
+      <div data-role="header">
+        <h2>Quiz</h2>
+        <div class="ui-btn-right">
+          <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
+          <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
+        </div> 
+      </div>
+      <div role="main" class="ui-content">
+        <h1 id="questionTextLabel">???</h1> 
+        <button onclick="submitAnswer(0)" id="answerButton0">:)</button>
+        <button onclick="submitAnswer(1)" id="answerButton1">:/</button>
+        <button onclick="submitAnswer(2)" id="answerButton2">:O</button>
+        <button onclick="submitAnswer(3)" id="answerButton3">:|</button>
+        <button onclick="requestNewQuestion()" id="nextQuestionButton">Next Question!</button>
+      </div>
+      <div data-role="footer">Ads go here! :)</div>
+    </div>
 
-		<div data-role="popup" id="pop_login" data-theme="a" class="ui-corner-all" data-dismissible="false">
-	        <div style="padding:10px 20px;">
-	            <h3 id="lbl_login">Please sign in</h3>
-	            <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-	               	<input type="text" id="inp_user" value="" placeholder="username" />
-	            </div>
-	            <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-		            <input type="password" id="inp_passwd" value="" placeholder="password" />
-		        </div>
-	            <button type="submit" onclick="loginUser()" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check">Sign in</button>
+    <!-- 
+      statisticsPage 
+    -->
+    <div data-role="page" id="statisticsPage">
+      <div data-role="header">
+        <h2>Quiz</h2>
+        <div class="ui-btn-right">
+          <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
+          <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
+        </div> 
+      </div>
+      <div role="main" class="ui-content">
+        <h1 id="questionTextLabel">Highscore</h1>
+        <table data-role="table" id="highscoreTable" data-mode="column toggle">
+          <thead><tr><th>Score</th><th>Date</th><th>Username</th></tr></thead>
+          <tbody />
+        </table>
+      </div>
+      <div data-role="footer">Ads go here! :)</div>
+    </div>
 
-                <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a" onclick="showRegister()">Register</button>
-	        </div>
-		</div>
-
-        <div data-role="popup" id="pop_register" data-theme="a" class="ui-corner-all" data-dismissible="false">
-            <div style="padding:10px 20px;">
-                <h3 id="lbl_register">Please sign in</h3>
-                <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="text" id="inp_user_reg" value="" placeholder="username" />
-                </div>
-                <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="password" id="inp_passwd_reg" value="" placeholder="password" />
-                </div>
-                <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
-                    <input type="password" id="inp_passwd_reg_rptd" value="" placeholder="repeated password" />
-                </div>
-                <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check" onclick="registerUser()">Register</button>
-
-                <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a" onclick="backToLogin()">Cancel</button>
-            </div>
+    <!-- 
+      loginPopup 
+    -->
+    <div data-role="popup" id="loginPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
+      <div style="padding:10px 20px;">
+        <h3 id="loginTextLabel">Please sign in:</h3>
+        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+          <input type="text" id="loginUsernameInput" value="" placeholder="username" />
         </div>
-	</body>
+        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+          <input type="password" id="loginPasswordInput" value="" placeholder="password" />
+        </div>
+        <button type="submit" onclick="loginUser()" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check">Sign in</button>
+        &nbsp;<a href="#statisticsPage" data-transition="flip" class="ui-link" style="float:right" onclick="showRegistrationPopup()">Register</a>
+      </div>
+    </div>
+
+    <!-- 
+      registerPopup 
+    -->
+    <div data-role="popup" id="registerPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
+      <div style="padding:10px 20px;">
+        <h3 id="registerTextLabel">Please register:</h3>
+        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+          <input type="text" id="registerUsernameInput" value="" placeholder="username" />
+        </div>
+        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+          <input type="password" id="registerPasswordInput" value="" placeholder="password" />
+        </div>
+        <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+          <input type="password" id="registerPasswordRepeatInput" value="" placeholder="repeated password" />
+        </div>
+        <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-btn-icon-left ui-icon-check" onclick="registerUser()">Register</button>
+        <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-a" onclick="returnToLogin()">Cancel</button>
+      </div>
+    </div>
+
+  </body>
 
 </html>

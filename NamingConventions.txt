@@ -1,6 +1,6 @@
 ### HTML Elements
 
-+ [function][Button | Page | TextInput | Popup | Label]
++ [function][Button | Page | Input | Popup | Label]
 	+ "loginButton"
 	+ "startPage"
 

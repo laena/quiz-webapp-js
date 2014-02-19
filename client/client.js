@@ -16,15 +16,15 @@ function getCurrentDate() {
 	return String(mm+'/'+dd+'/'+yyyy);
 }
 
-function client_init() {
-	$("#pop_login").popup();
-	$("#pop_register").popup();	
+function initializeClient() {
+	$("#loginPopup").popup();
+	$("#registerPopup").popup();	
 
 	socketio.on("new_question", 
 		function(data) {
-			$("#lbl_q").html(data['question']);
+			$("#questionTextLabel").html(data['question']);
 			for (var i=0; i < data['answers'].length; i++) {
-				setText("#btn_a" + i, data['answers'][i]);
+				setText("#answerButton" + i, data['answers'][i]);
 			}                   
 			setButtonsDisabled(false);
 			setNextButtonVisible(false);
@@ -42,15 +42,15 @@ function client_init() {
 	socketio.on("login_result",
 		function(data) {
 			if (data["result"] == "unknown user") {
-				setText("#lbl_login", "Invalid user name<br />Please try again:");
+				setText("#loginTextLabel", "Invalid username.<br />Please try again:");
 			} else if (data["result"]) {
 				userToken = data["userToken"];
 				localStorage.setItem("userToken", userToken);
-				$("#pop_login").popup("close");
-				$("body").pagecontainer("change", "#p_start", {});
-				getQuestion();
+				$("#loginPopup").popup("close");
+				$("body").pagecontainer("change", "#startPage", {});
+				requestNewQuestion();
 			} else {
-				setText("#lbl_login", "Invalid password<br />Please try again:");
+				setText("#loginTextLabel", "Invalid password.<br />Please try again:");
 			}
 		}
 	);
@@ -58,35 +58,35 @@ function client_init() {
 	socketio.on("register_result", 
 		function(data) {
 			if (data["result"] == true) {
-				setText("#lbl_login", "Registration successful.<br/>Please sign in:");
-				backToLogin();
+				setText("#loginTextLabel", "Registration successful.<br/>Please sign in:");
+				returnToLogin();
 			} else {
-				setText("#lbl_register", "Registration failed.<br/>Please try again:");
+				setText("#registerTextLabel", "Registration failed.<br/>Please try again:");
 			}
 		}
 	);	
 
-	$('#inp_user').keydown( function(e) {
+	$('#loginUsernameInput').keydown( function(e) {
         var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
         if(key == 13) {
-        	loginUser();
+        	tryToLoginUser();
         }
     });
 
-    $('#inp_passwd').keydown( function(e) {
+    $('#loginPasswordInput').keydown( function(e) {
         var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
         if(key == 13) {
-        	loginUser();
+        	tryToLoginUser();
         }
     });
 
 	userToken = localStorage.getItem("userToken");
 	if (userToken == null) {
-		$("body").pagecontainer("change", "#p_login", {});
-		setTimeout(showLogin, 500);
+		$("body").pagecontainer("change", "#loginPopup", {});
+		setTimeout(showLoginPopup, 500);
 	} else  {
 		console.log("user token:" + userToken);
-		getQuestion();
+		requestNewQuestion();
 	}
 
 	addHighscoreEntry(2, getCurrentDate(), "Lena");
@@ -94,7 +94,7 @@ function client_init() {
 	sortHighscores();
 }
 
-function getQuestion() {
+function requestNewQuestion() {
 	++questionIndex;
 	socketio.emit("get_next_question", {currentQuestion : questionIndex, userToken : userToken});
 }
@@ -104,24 +104,24 @@ function setText(id, text) {
 }
 
 function setAnswer(bID, b) {
-	$("#btn_a" + bID).buttonMarkup({icon: b ? "check" : "delete"});
-	$("#btn_a" + bID).buttonMarkup({theme: b ? "c" : "b"});
+	$("#answerButton" + bID).buttonMarkup({icon: b ? "check" : "delete"});
+	$("#answerButton" + bID).buttonMarkup({theme: b ? "c" : "b"});
 }
 
 function clearAnswers() {
 	for (var i = 0; i < 4; ++i) {
-		$("#btn_a" + i).buttonMarkup({icon: ""});
-		$("#btn_a" + i).buttonMarkup({theme: "a"});
+		$("#answerButton" + i).buttonMarkup({icon: ""});
+		$("#answerButton" + i).buttonMarkup({theme: "a"});
 	};          
 }
 
 function setNextButtonVisible(b) {
-	b ? $("#btn_next").show() : $("#btn_next").hide();
+	b ? $("#nextQuestionButton").show() : $("#nextQuestionButton").hide();
 }
 
 function setButtonsDisabled(b) {
 	for (var i = 0; i < 4; ++i) {
-		$("#btn_a" + i).attr("disabled", b);
+		$("#answerButton" + i).attr("disabled", b);
 	};          
 }
 
@@ -131,52 +131,52 @@ function submitAnswer(index) {
 	setButtonsDisabled(true);
 }
 
-function loginUser() {
-	socketio.emit("login_user", {user : $("#inp_user").val(), password : $("#inp_passwd").val()});	
+function tryToLoginUser() {
+	socketio.emit("login_user", {user : $("#loginUsernameInput").val(), password : $("#loginPasswordInput").val()});	
 }
 
 function logoutUser() {
 	localStorage.removeItem("userToken");
 	userToken = null;
 	console.log("logging out");
-	setTimeout(showLogin, 500);
+	setTimeout(showLoginPopup, 500);
 }
 
-function showLogin() {
-	$("#pop_login").popup("open");
+function showLoginPopup() {
+	$("#loginPopup").popup("open");
 }
 
-function showRegister() {
-	$("#pop_login").popup("close");
+function showRegistrationPopup() {
+	$("#loginPopup").popup("close");
 	setTimeout(function() {
-		$("#pop_register").popup("open");
+		$("#registerPopup").popup("open");
 	}, 100);
 }
 
-function backToLogin() {
-	$("#pop_register").popup("close");
+function returnToLogin() {
+	$("#registerPopup").popup("close");
 	setTimeout(function() {
-		$("#pop_login").popup("open");
+		$("#loginPopup").popup("open");
 	}, 100);	
 }
 
-function registerUser() {
-	if ($("#inp_passwd_reg").val() != $("#inp_passwd_reg_rptd").val()) {
-		setText("#lbl_register", "Passwords unequal.<br />Please try again:");
-		setText("#inp_passwd_reg", "");
-		setText("#inp_passwd_reg_rptd", "");
+function tryToRegisterUser() {
+	if ($("#registerPasswordInput").val() != $("#registerPasswordRepeatInput").val()) {
+		setText("#registerTextLabel", "Passwords unequal.<br />Please try again:");
+		setText("#registerPasswordInput", "");
+		setText("#registerPasswordRepeatInput", "");
 	} else {
-		socketio.emit("register_user", {user : $("#inp_user_reg").val(), password : $("#inp_passwd_reg").val()});
+		socketio.emit("register_user", {user : $("#registerUsernameInput").val(), password : $("#registerPasswordInput").val()});
 	}	
 }
 
 function addHighscoreEntry(score, date, player) {
-	$("#highscore_table tbody").append($("<tr>\n")
+	$("#highscoreTable tbody").append($("<tr>\n")
  		.append("<td>" + score + "</td>\n")
  		.append("<td>" + date + "</td>\n")
  		.append("<td>" + player + "</td>\n")
  		.append("</tr>"));
-	$($("#highscore_table")).table( "refresh" );
+	$($("#highscoreTable")).table( "refresh" );
 }
 
 function sortHighscores() {

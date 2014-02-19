@@ -55,13 +55,13 @@ function tryToRegisterUser() {
 
 // Server response handling ------------------------------------------------ //
 
-function onTryLoginResponse(result, userToken) {
+function onTryLoginResponse(result, token) {
     if (result == 'unknown user') {
         setElementText('loginTextLabel', 
         	'Invalid username.<br />Please try again:');
     } else if (result) {
-        userToken = userToken;
-        localStorage.setItem('userToken', userToken);
+        userToken = token;
+        localStorage.setItem('userToken', token);
         closePopup('loginPopup');
         showPage('startPage');
     } else {

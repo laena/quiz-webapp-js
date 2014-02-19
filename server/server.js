@@ -48,7 +48,7 @@ var quizCollection = db.collection("quiz_db");
 function fillDBIfEmpty() {        
     var questions = new Array();
     questions[0] = new question(0, "What is 5+5?",  ["10", "11", "12", "Dogge"], 0);
-    questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz :D"], 0);
+    questions[1] = new question(1, "What can dogs not do?",  ["Look up!", "Cheat!", "Your Mother!", "B Cutzz:D"], 0);
     questions[2] = new question(2, "What's in it for me?",  ["Dunno", "Your Mother!", "Chocolate?", "Beer"], 0);
     questions[3] = new question(3, "What let the dogs out?",  ["You", "U", "OO", "Who!"], 3);
 
@@ -60,7 +60,7 @@ function fillDBIfEmpty() {
 fillDBIfEmpty();
 
 function loadQuestion(id, callback) {
-    quizCollection.findOne({ID : id}, function(err, item) {
+    quizCollection.findOne({ID: id}, function(err, item) {
         if (err) {
             console.log("Cannot find Question with ID: " + id);
             return;
@@ -82,12 +82,12 @@ function documentToQuestion(doc) {
 // ------------------------------------------------------------------------- //
 
 var userCollection = db.collection("user_db");
-userCollection.update({username : "admin"}, {username : "admin", password : "admin", token : null}, {upsert:true});
+userCollection.update({username: "admin"}, {username: "admin", password: "admin", token: null}, {upsert:true});
 
 var activeTokens = new Array();
 
 function loginUser(user, password, callback) {
-    userCollection.findOne({username : user} , function(err, item) {
+    userCollection.findOne({username: user} , function(err, item) {
         console.log(item);
         if (err) {
             console.log(err);
@@ -103,7 +103,7 @@ function loginUser(user, password, callback) {
 }
 
 function logoutUser(user, token, callback) {
-    userCollection.findOne({username : user} , function(err, item) {
+    userCollection.findOne({username: user} , function(err, item) {
         if (err) {
             callback("unknown user", null);
             return;
@@ -119,11 +119,11 @@ function logoutUser(user, token, callback) {
 }
 
 function registerUser(user, password, callback) {
-    userCollection.findOne({username : user} , function(err, item) {
+    userCollection.findOne({username: user} , function(err, item) {
         if (err == null && item != null) {
             return callback(false);
         } else {
-            userCollection.save({username : user, password : password}, {save:true});
+            userCollection.save({username: user, password: password}, {save:true});
             callback(true);
         }
     });
@@ -131,7 +131,7 @@ function registerUser(user, password, callback) {
 
 function generateUserToken(user) {
     var token = hat();
-    userCollection.update({username : user}, { $set: { token : token } }, {});
+    userCollection.update({username: user}, { $set: { token: token } }, {});
     return token;
 }
 
@@ -151,34 +151,39 @@ var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function(socket) {
 
-    socket.on('get_next_question', function(data) {
+    socket.on('newQuestionRequest', function(data) {
         loadQuestion(data['currentQuestion'], function(current) {
-            if (checkToken(data['userToken']))
-                io.sockets.emit("new_question", { question: current.text, answers: current.answers });
+            if (confirmToken(data['userToken'])) {
+                io.sockets.emit("newQuestionResponse", { question: current.text, answers: current.answers });                
+            }
         });
     });
 
-    socket.on('submit_answer', function(data) {
-        loadQuestion(data['questionID'], function(current) {
-            if (checkToken(data['userToken']))
-                io.sockets.emit("result", { result: current.correctAnswer == data['answer'] ? 1 : 0});
+    socket.on('verifyAnswerRequest', function(data) {
+        loadQuestion(data['questionIndex'], function(current) {
+            if (confirmToken(data['userToken']))
+                io.sockets.emit("verifyAnswerResponse", { result: current.correctAnswer == data['answer'] ? 1: 0});
         });
     });
 
-    socket.on('login_user', function(data) {
+    socket.on('tryLoginRequest', function(data) {
         loginUser(data['user'], data['password'], function(current, token) {
-            io.sockets.emit("login_result", { result : current, userToken : token});
+            io.sockets.emit("tryLoginResponse", { result: current, userToken: token});
         });
     });
 
-    socket.on('register_user', function(data) {
+    socket.on('tryRegistrationRequest', function(data) {
         registerUser(data['user'], data['password'], function(current, token) {
-            io.sockets.emit("register_result", { result : current });
+            io.sockets.emit("tryRegistrationResponse", { result: current });
         });
     });
 });
 
-function checkToken(token) {
-    console.log("Checking token: " + token);
-    return activeTokens.indexOf(token) != -1;
+function confirmToken(token) {
+    var result = activeTokens.indexOf(token) != -1;
+    console.log("Checking token: " + token + '[' + result + ']');
+    if(!result) {
+        io.sockets.emit("invalidTokenResponse", { userToken: token });
+    }
+    return result;
 }

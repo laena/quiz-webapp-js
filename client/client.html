@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="css/basic.min.css" />
 		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
 		<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
+		<link rel="stylesheet" href="css/jclient.custom.css" />
         <!--<link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css">-->
 
         <script type="application/javascript" language="javascript" src="jquery-1.10.2.min.js"></script>
@@ -25,7 +26,7 @@
 	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Single Player</a></p>
 	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Duell</a></p>
 	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Triell</a></p>
-	            <p><a href="#p_quiz" class="ui-btn ui-shadow ui-corner-all ui-disabled" data-transition="flip">Statistics</a></p>
+	            <p><a href="#p_statistics" class="ui-btn ui-shadow ui-corner-all" data-transition="flip">Statistics</a></p>
 	        </div>
 	        <div data-role="footer">Ads go here! :)</div>
 	    </div>
@@ -45,6 +46,31 @@
 	            <button onclick="submitAnswer(2)" id="btn_a2">submit 3</button>
 	            <button onclick="submitAnswer(3)" id="btn_a3">submit 4</button>
 	            <button onclick="getQuestion()" id="btn_next">Next Question!</button>
+	        </div>
+	        <div data-role="footer">Ads go here! :)</div>
+	    </div>
+
+	    <div data-role="page" id="p_statistics">
+	        <div data-role="header">
+                <h2>Quiz</h2>
+                <div class="ui-btn-right">
+                    <a href="#p_start" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
+                    <a href="#p_start" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip"onclick="logoutUser()"></a>
+                </div> 
+            </div>
+	        <div role="main" class="ui-content">
+	            <h1 id="lbl_q">Highscore</h1>
+	            <table data-role="table" id="highscore_table" data-mode="column toggle">
+				  <thead>
+				    <tr>
+				      <th>Score</th>
+				      <th>Date</th>
+				      <th>Username</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+				</table>
 	        </div>
 	        <div data-role="footer">Ads go here! :)</div>
 	    </div>

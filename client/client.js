@@ -4,6 +4,18 @@ var socketio = io.connect("127.0.0.1:1337");
 
 var userToken = null;
 
+function getCurrentDate() {
+	var today 	= new Date();
+	var dd 		= today.getDate();
+	var mm 		= today.getMonth()+1; //January is 0!
+	var yyyy 	= today.getFullYear();
+
+	if(dd<10) dd = '0'+dd; 
+	if(mm<10) mm = '0'+mm;
+
+	return String(mm+'/'+dd+'/'+yyyy);
+}
+
 function client_init() {
 	$("#pop_login").popup();
 	$("#pop_register").popup();	
@@ -27,7 +39,7 @@ function client_init() {
 		}
 	);
 
-	socketio.on("login_result", 
+	socketio.on("login_result",
 		function(data) {
 			if (data["result"] == "unknown user") {
 				setText("#lbl_login", "Invalid user name<br />Please try again:");
@@ -76,6 +88,10 @@ function client_init() {
 		console.log("user token:" + userToken);
 		getQuestion();
 	}
+
+	addHighscoreEntry(2, getCurrentDate(), "Lena");
+	addHighscoreEntry(3, getCurrentDate(), "Frank");
+	sortHighscores();
 }
 
 function getQuestion() {
@@ -152,4 +168,17 @@ function registerUser() {
 	} else {
 		socketio.emit("register_user", {user : $("#inp_user_reg").val(), password : $("#inp_passwd_reg").val()});
 	}	
+}
+
+function addHighscoreEntry(score, date, player) {
+	$("#highscore_table tbody").append($("<tr>\n")
+ 		.append("<td>" + score + "</td>\n")
+ 		.append("<td>" + date + "</td>\n")
+ 		.append("<td>" + player + "</td>\n")
+ 		.append("</tr>"));
+	$($("#highscore_table")).table( "refresh" );
+}
+
+function sortHighscores() {
+	// TODO
 }

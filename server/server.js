@@ -5,9 +5,24 @@ var dbengine = require('tingodb')();
 var qs = require('querystring');
 var hat = require('hat');
 
+// ------------------------------------------------------------------------- //
+//                            utility stuff                                  //
+// ------------------------------------------------------------------------- //
+
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+
+function removeByValue(array, value) {
+    for (var i = array.length - 1; i >= 0; i--) {
+        if (array[i] === value) array.splice(i, 1);
+    }
+}
+
+// ------------------------------------------------------------------------- //
+//                            constructors                                   //
+// ------------------------------------------------------------------------- //
+
 
 function question(ID, text, answers, correctAnswer) {
     this.ID = ID;
@@ -67,23 +82,39 @@ function documentToQuestion(doc) {
 // ------------------------------------------------------------------------- //
 
 var userCollection = db.collection("user_db");
-userCollection.update({username : "admin"}, {username : "admin", password : "admin"}, {upsert:true});
+userCollection.update({username : "admin"}, {username : "admin", password : "admin", token : null}, {upsert:true});
 
 var activeTokens = new Array();
 
 function loginUser(user, password, callback) {
     userCollection.findOne({username : user} , function(err, item) {
+        console.log(item);
+        if (err) {
+            console.log(err);
+            callback("unknown user", null);
+            return;
+        }
+        else if (item.password == password) {
+            var token = generateUserToken(user);
+            activeTokens.push(token);
+            return callback(true, token); // success
+        } else return callback(false, null); // invalid password
+    });
+}
+
+function logoutUser(user, token, callback) {
+    userCollection.findOne({username : user} , function(err, item) {
         if (err) {
             callback("unknown user", null);
             return;
         }
-        console.log(item);
-        if (item.password == password) {
-            var token = generateUserToken(user);
-            activeTokens.push(token);
-            console.log("active tokens: " + token);
-            callback(true, token); // success
-        } else return callback(false, null); // invalid password
+        else if (item.token != token) {
+            console.log("Tokens different, this should not happen");
+            return callback(false);
+        }
+        item.token = null;
+        activeTokens.removeByValue(token);
+        return callback(true);
     });
 }
 
@@ -91,7 +122,6 @@ function registerUser(user, password, callback) {
     userCollection.findOne({username : user} , function(err, item) {
         if (err == null && item != null) {
             return callback(false);
-            return;
         } else {
             userCollection.save({username : user, password : password}, {save:true});
             callback(true);
@@ -100,7 +130,9 @@ function registerUser(user, password, callback) {
 }
 
 function generateUserToken(user) {
-    return hat();
+    var token = hat();
+    userCollection.update({username : user}, { $set: { token : token } }, {});
+    return token;
 }
 
 // ------------------------------------------------------------------------- //

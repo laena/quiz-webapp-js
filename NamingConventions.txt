@@ -1,0 +1,83 @@
+### HTML Elements
+
++ [function][Button | Page | TextInput | Popup | Label]
+	+ "loginButton"
+	+ "startPage"
+
+### Client-Server Communication
+
++ messages: [function][Question | Answer | User | Score][Request | Response]
+	+ Request: Client -> Server, Response: Server -> Client
+	+ "newQuestionRequest"
+	+ "registerUserResponse"
+	+ "verifyAnswerRequest"
+
++ message content keys:
+	+ boolean: [is | has][Question | Answer | User | Score][adjective]
+	+ IDs: [Question | User]ID
+
+### Functions
+
++ callbacks: [on][event]
++ camelCase, starting with a verb
+
+### Variables / Parameters
+
++ packages: lowercase
++ constants: UPPERCASE
++ camelCase otherwise
+
+### Formatting
+
++ "egyptian braces"
++ maximum line length: 80 characters
++ spaces, tab width 4 (translate tabs to spaces)
++ Prefer ' over "
+
+
+### Best Practices
+https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
++ In general, use functionNamesLikeThis, variableNamesLikeThis, ClassNamesLikeThis, EnumNamesLikeThis, methodNamesLikeThis, CONSTANT_VALUES_LIKE_THIS, foo.namespaceNamesLikeThis.bar, and filenameslikethis.js.
+
++ Closures:
+    function foo(element, a, b) {
+      element.onclick = bar(a, b);
+    }
+
+    function bar(a, b) {
+      return function() { /* uses a and b */ };
+    }
+
++ For Loops: simple for loops only
+    function printArray(arr) {
+      var l = arr.length;
+      for (var i = 0; i < l; i++) {
+        print(arr[i]);
+      }
+    }
+
++ Arrays
+    + never use Array as a map/hash/associative array
+    + use Array and Object literals instead of Array and Object constructors
+        var a3 = [x1]; // ok
+        
+        // If x1 is a number and it is a natural number the length will be x1.
+        // If x1 is a number but not a natural number this will throw an exception.
+        // Otherwise the array will have one element with x1 as its value.
+        var a3 = new Array(x1);
+
+        // For Objects (for the sake of consistency):
+        var o = {};
+
+        var o2 = {
+          a: 0,
+          b: 1,
+          c: 2,
+          'strange key': 3
+        };
+
++ Node Iterators
+    var paragraphs = document.getElementsByTagName('p');
+    for (var i = 0, paragraph; paragraph = paragraphs[i]; i++) {
+        doSomething(paragraph);
+    }

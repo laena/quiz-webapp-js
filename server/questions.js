@@ -9,11 +9,13 @@ module.exports = {
 		if (!quizCollection || quizCollection == null) {
 			console.log("Quiz collection not loaded");
 			callback(null);
+			return;
 		}
 		quizCollection.findOne({ID: id}, function(err, item) {
-			if (err) {
+			if (err || !item || item == undefined) {
 				console.log("Cannot find Question with ID: " + id);
 				callback(null);
+				return;
 			}
 			callback(documentToQuestion(item));
 		})

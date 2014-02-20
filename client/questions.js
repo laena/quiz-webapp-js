@@ -38,6 +38,11 @@ function submitAnswer(index) {
 // Server response handling ------------------------------------------------ //
 
 function onNewQuestion(question, answers) {
+    if (!question || !answers) {
+        questionIndex = -1;
+        showPage('resultPage');
+        return;
+    }
     setElementText('questionTextLabel', question);
     for (var i=0; i < answers.length; i++) {
         setElementText('answerButton' + i, answers[i]);

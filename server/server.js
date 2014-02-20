@@ -113,9 +113,13 @@ var io = require('socket.io').listen(app);
 io.sockets.on('connection', function(socket) {
 
     socket.on('newQuestionRequest', function(data) {
+        console.log(data);
         questionDB.loadQuestion(data['currentQuestion'], function(current) {
             if (confirmToken(data['userToken'])) {
-                io.sockets.emit('newQuestionResponse', { question: current.text, answers: current.answers });                
+                if (current == null)
+                    io.sockets.emit('newQuestionResponse', { question: null, answers: null }); // last question in quiz
+                else
+                    io.sockets.emit('newQuestionResponse', { question: current.text, answers: current.answers });                
             }
         });
     });

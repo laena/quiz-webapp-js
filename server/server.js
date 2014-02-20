@@ -34,6 +34,8 @@ userCollection.update({username: "admin"}, {username: "admin", password: "admin"
 var activeTokens = {};
 loadSessionTokens();
 
+var clientScores = {};
+
 function loadSessionTokens() {
 
 }
@@ -96,6 +98,23 @@ function confirmToken(token) {
     return result;
 }
 
+function getAndResetClientScore(token) {
+    var user = activeTokens[token]; // todo assert that user exists
+    var score = clientScores[user];
+    clientScores[user] = 0;
+    console.log("Score: ", user, score);
+    return score;
+}
+
+function updateClientScore(token, isCorrect) {
+    var user = activeTokens[token]; // todo assert that user exists
+    var score = clientScores[user];
+    if (!score || score == undefined) {
+        clientScores[user] = 0;
+    }
+    if (isCorrect) clientScores[user]++;
+}
+
 // ------------------------------------------------------------------------- //
 //                     server communication stuff                            //
 // ------------------------------------------------------------------------- //
@@ -115,19 +134,25 @@ io.sockets.on('connection', function(socket) {
     socket.on('newQuestionRequest', function(data) {
         console.log(data);
         questionDB.loadQuestion(data['currentQuestion'], function(current) {
-            if (confirmToken(data['userToken'])) {
-                if (current == null)
-                    io.sockets.emit('newQuestionResponse', { question: null, answers: null }); // last question in quiz
-                else
-                    io.sockets.emit('newQuestionResponse', { question: current.text, answers: current.answers });                
+            var token = data['userToken'];
+            if (confirmToken(token)) {
+                if (current == null) {
+                    io.sockets.emit('newQuestionResponse', { question: null, answers: null, score: getAndResetClientScore(token) }); // last question in quiz
+                } else {
+                    io.sockets.emit('newQuestionResponse', { question: current.text, answers: current.answers }); 
+                }                
             }
         });
     });
 
     socket.on('verifyAnswerRequest', function(data) {
         questionDB.loadQuestion(data['questionIndex'], function(current) {
-            if (confirmToken(data['userToken']))
-                io.sockets.emit('verifyAnswerResponse', { result: current.correctAnswer == data['answer'] ? 1: 0});
+            var token = data['userToken'];
+            if (confirmToken(token)) {
+                var isCorrect = current.correctAnswer == data['answer'];
+                updateClientScore(token, isCorrect);
+                io.sockets.emit('verifyAnswerResponse', { result: isCorrect ? 1: 0});
+            }
         });
     });
 

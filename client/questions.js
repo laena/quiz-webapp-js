@@ -37,9 +37,10 @@ function submitAnswer(index) {
 
 // Server response handling ------------------------------------------------ //
 
-function onNewQuestion(question, answers) {
+function onNewQuestion(question, answers, score) {
     if (!question || !answers) {
         questionIndex = -1;
+        setElementText('scoreLabel', score);
         showPage('resultPage');
         return;
     }

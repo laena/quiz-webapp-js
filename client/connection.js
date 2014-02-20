@@ -42,7 +42,7 @@ function requestRegistrationTrial(username, password) {
 function registerForNewQuestionResponse(callback) {
 	registerSocketCallback('newQuestionResponse', 
 		function(data) { 
-			callback(data['question'], data['answers']);
+			callback(data['question'], data['answers'], data['score']);
 		}
 	);
 }

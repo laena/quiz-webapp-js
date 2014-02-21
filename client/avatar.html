@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Avatar Builder</title>
+
+  <!-- STYLE -->
+  <link rel="stylesheet" href="css/basic.min.css" />
+  <link rel="stylesheet" href="css/client.custom.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
+  <!-- <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css"> -->
+
+  <!-- SCRIPTS -->
+  <script type="application/javascript" language="javascript" src="thirdparty/jquery-1.10.2.min.js"></script>
+  <script type="application/javascript" language="javascript" src="thirdparty/jquery.mobile-1.4.1.min.js"></script>
+  <script type="application/javascript" language="javascript" src="thirdparty/socket.io.min.js"></script>
+
+  <script type="application/javascript" language="javascript" src="avatar.js"></script>
+</head>
+
+<body>
+<div data-role="page" id="startPage">
+  <div data-role="header">
+    <h2>Quiz</h2>
+  </div>
+  
+  <div role="main" class="ui-content">
+
+    <h1>Choose Your Avatar!</h1>
+    <p><canvas id="avatarCanvas" width="400px" heigh="400px"></canvas></p>
+
+    <div class="ui-grid-b">
+    <div class="ui-block-a">
+      <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="displayPreviousHead()"></a>
+    </div>
+    <div class="ui-block-b"><h3>Head</h3></div>
+    <div class="ui-block-c"><a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="displayNextHead()"></a>
+    </div>
+  </div> 
+
+  </div>
+
+  <div data-role="footer">Ads go here! :)</div>
+</div>
+
+</body>
+</html>

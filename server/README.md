@@ -7,7 +7,7 @@
 - socket.io (npm install socket.io)
 - jquery-mobile
 
-### Getting Startet
+### Getting Started
 
 - npm install
 - node server.js

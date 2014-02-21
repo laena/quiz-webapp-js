@@ -4,6 +4,7 @@ var lastAnswer = -1;
 function initializeQuestionManagement() {
 	registerForNewQuestionResponse(onNewQuestion);
     registerForVerifyAnswerResponse(onVerifyAnswer);
+    registerForQuizEndedResponse(onQuizEnded);
 }
 
 function showNewQuestion() {
@@ -35,6 +36,14 @@ function submitAnswer(index) {
     setButtonsDisabled(true);
 }
 
+function showResultPage(score) {
+    setElementText('congratsLabel', 'Congratulations ' + score.user + '!');
+    setElementText('scoreLabel', 
+        'You correctly answered ' + score.correctAnswers + 
+        ' out of ' + score.questionsAnswered + ' questions.');
+    showPage('resultPage');
+}
+
 // Server response handling ------------------------------------------------ //
 
 function onNewQuestion(id, question, answers) {
@@ -53,3 +62,6 @@ function onVerifyAnswer(isCorrect) {
     showButton('nextQuestionButton')
 }
 
+function onQuizEnded(score) {
+    showResultPage(score);   
+}

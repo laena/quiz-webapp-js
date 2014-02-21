@@ -68,3 +68,9 @@ function registerForInvalidTokenResponse(callback) {
 		function(data) { callback(data['token']);}
 	);
 }
+
+function registerForQuizEndedResponse(callback) {
+	registerSocketCallback('quizEndedResponse', 
+		function(data) { callback(data['score']);}
+	);
+}

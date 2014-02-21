@@ -3,7 +3,7 @@ var currentToken = null;
 function initializeUserManagement() {
 	registerForTryLoginResponse(onTryLoginResponse);
     registerForTryRegistrationResponse(onTryRegistrationResponse);
-    registerForInvalidTokenResponse(onInvaildtoken);
+    registerForInvalidTokenResponse(onInvalidToken);
 
     acquiretoken();
 }
@@ -83,7 +83,7 @@ function onTryRegistrationResponse(token) {
     }
 }
 
-function onInvaildtoken(token) {
+function onInvalidToken(token) {
 	showPage('startPage');
 	showPopupDelayed('loginPopup', 500);
 }

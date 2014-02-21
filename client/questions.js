@@ -8,7 +8,7 @@ function initializeQuestionManagement() {
 
 function showNewQuestion() {
     ++questionIndex;	
-    requestNewQuestion(userToken, questionIndex);
+    requestNewQuestion(currentToken, questionIndex);
 }
 
 function setAnswer(bID, b) {
@@ -30,20 +30,15 @@ function setButtonsDisabled(b) {
 }
 
 function submitAnswer(index) {
-    requestAnswerVerfication(userToken, questionIndex, index);
+    requestAnswerVerfication(currentToken, questionIndex, index);
     lastAnswer = index;
     setButtonsDisabled(true);
 }
 
 // Server response handling ------------------------------------------------ //
 
-function onNewQuestion(question, answers, score) {
-    if (!question || !answers) {
-        questionIndex = -1;
-        setElementText('scoreLabel', score);
-        showPage('resultPage');
-        return;
-    }
+function onNewQuestion(id, question, answers) {
+    questionIndex = id;
     setElementText('questionTextLabel', question);
     for (var i=0; i < answers.length; i++) {
         setElementText('answerButton' + i, answers[i]);

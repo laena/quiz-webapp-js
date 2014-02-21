@@ -1,12 +1,15 @@
 module.exports = {
-	
-	String.prototype.endsWith = function(suffix) {
-		return this.indexOf(suffix, this.length - suffix.length) !== -1;
-	},
 
-	removeByValue: function(array, value) {
-		for (var i = array.length - 1; i >= 0; i--) {
-			if (array[i] === value) array.splice(i, 1);
-		}
-	}
+    shuffle: function(o) {
+        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    },
+
+    iterate: function(object, callback) {
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                callback(key, object[key]);
+            }
+        }
+    }
 };

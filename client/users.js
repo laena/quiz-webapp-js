@@ -1,16 +1,16 @@
-var userToken = null;
+var currentToken = null;
 
 function initializeUserManagement() {
 	registerForTryLoginResponse(onTryLoginResponse);
     registerForTryRegistrationResponse(onTryRegistrationResponse);
-    registerForInvalidTokenResponse(onInvaildUserToken);
+    registerForInvalidTokenResponse(onInvaildtoken);
 
-    acquireUserToken();
+    acquiretoken();
 }
 
-function acquireUserToken() {
-	userToken = localStorage.getItem('userToken');
-    if (userToken == null) {
+function acquiretoken() {
+	currentToken = localStorage.getItem('token');
+    if (currentToken == null) {
         showPopupDelayed('loginPopup', 500);
     }
 }
@@ -23,8 +23,8 @@ function tryToLoginUser() {
 }
 
 function logoutUser() {
-    localStorage.removeItem('userToken');
-    userToken = null;
+    localStorage.removeItem('token');
+    currentToken = null;
     console.log('logging out');
     showPopupDelayed('loginPopup', 500);
 }
@@ -40,8 +40,10 @@ function returnToLogin() {
 }
 
 function tryToRegisterUser() {
-    if (getInputValue('registerPasswordInput') != getInputValue('registerPasswordRepeatInput')) {
-        setElementText('registerTextLabel', 'Passwords unequal.<br />Please try again:');
+    if (getInputValue('registerPasswordInput') != 
+        getInputValue('registerPasswordRepeatInput')) {
+        setElementText('registerTextLabel', 
+            'Passwords unequal.<br />Please try again:');
         setElementText('registerPasswordInput', '');
         setElementText('registerPasswordRepeatInput', '');
     } else {
@@ -55,33 +57,33 @@ function tryToRegisterUser() {
 
 // Server response handling ------------------------------------------------ //
 
-function onTryLoginResponse(result, token) {
-    if (result == 'unknown user') {
+function onTryLoginResponse(token) {
+    console.log('onTryLoginResponse:' + token);
+    if(token == null) {
         setElementText('loginTextLabel', 
-        	'Invalid username.<br />Please try again:');
-    } else if (result) {
-        userToken = token;
-        localStorage.setItem('userToken', token);
-        closePopup('loginPopup');
-        showPage('startPage');
+            'Invalid login.<br />Please try again:');
     } else {
-        setElementText('loginTextLabel', 
-        	'Invalid password.<br />Please try again:');
+       currentToken = token;
+       localStorage.setItem('token', token);
+       closePopup('loginPopup');
+       showPage('startPage'); 
     }
 }
 
-function onTryRegistrationResponse(successful) {
-    if (successful) {
-        setElementText('loginTextLabel', 
-        	'Registration successful.<br/>Please sign in:');
-        returnToLogin();
-    } else {
+function onTryRegistrationResponse(token) {
+    console.log('onTryRegistrationResponse:' + token);
+    if(token == null) {
         setElementText('registerTextLabel', 
-        	'Registration failed.<br/>Please try again:');
+            'Registration failed.<br />Please try again:');
+    } else {
+       currentToken = token;
+       localStorage.setItem('token', token);
+       closePopup('loginPopup');
+       showPage('startPage'); 
     }
 }
 
-function onInvaildUserToken(userToken) {
+function onInvaildtoken(token) {
 	showPage('startPage');
 	showPopupDelayed('loginPopup', 500);
 }

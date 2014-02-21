@@ -14,25 +14,23 @@ function sendMessage(messageName, parameters) {
 
 // Server Requests --------------------------------------------------------- //
 
-function requestNewQuestion(userToken, questionIndex) {
-	sendMessage('newQuestionRequest', {
-		currentQuestion: questionIndex, userToken: userToken
-	});
+function requestNewQuestion(token) {
+	sendMessage('newQuestionRequest', { token: token });
 }
 
-function requestAnswerVerfication(userToken, questionIndex, answerIndex) {
+function requestAnswerVerfication(token, questionId, answerIndex) {
 	sendMessage('verifyAnswerRequest', {
-		answer: answerIndex, questionIndex: questionIndex, userToken: userToken
+		token: token, questionId: questionId, answerIndex: answerIndex
 	});
 }
 
 function requestLoginTrial(username, password) {
-	sendMessage('tryLoginRequest', {user: username, password: password});
+	sendMessage('tryLoginRequest', {username: username, password: password});
 }
 
 function requestRegistrationTrial(username, password) {
 	sendMessage('tryRegistrationRequest', {
-		user: username, password: password
+		username: username, password: password
 	});
 }
 
@@ -42,39 +40,31 @@ function requestRegistrationTrial(username, password) {
 function registerForNewQuestionResponse(callback) {
 	registerSocketCallback('newQuestionResponse', 
 		function(data) { 
-			callback(data['question'], data['answers'], data['score']);
+			callback(data['id'], data['question'], data['answers']);
 		}
 	);
 }
 
 function registerForVerifyAnswerResponse(callback) {
 	registerSocketCallback('verifyAnswerResponse', 
-		function(data) { 
-			callback(data['result'] == 1);
-		}
+		function(data) { callback(data['result'] == 1); }
 	);
 }
 
 function registerForTryLoginResponse(callback) {
 	registerSocketCallback('tryLoginResponse', 
-		function(data) { 
-			callback(data['result'], data['userToken']);
-		}
+		function(data) { callback(data['token']); }
 	);
 }
 
 function registerForTryRegistrationResponse(callback) {
 	registerSocketCallback('tryRegistrationResponse', 
-		function(data) { 
-			callback(data['result']);
-		}
+		function(data) { callback(data['token']); }
 	);
 }
 
 function registerForInvalidTokenResponse(callback) {
 	registerSocketCallback('invalidTokenResponse', 
-		function(data) { 
-			callback(data['userToken']);
-		}
+		function(data) { callback(data['token']);}
 	);
 }

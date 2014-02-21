@@ -1,170 +1,127 @@
 var assert = require('assert');
 var http = require('http');
 var fs = require('fs');
-var dbengine = require('tingodb')();
-var qs = require('querystring');
 var hat = require('hat');
 
-// ------------------------------------------------------------------------- //
-//                            constructors                                   //
-// ------------------------------------------------------------------------- //
+var util = require('./util.js');
+var storage = require('./storage.js');
 
-function user(ID, username, password, email) {
-    this.ID = ID;
-    this.username = username;
-    this.password = password;
-    this.email = email;
+// initialization ---------------------------------------------------------- //
+
+storage.initializeStorage();
+
+var server = createServer();
+var io = initializeConnection(server);
+
+function createServer() {
+    return http.createServer(
+        function (request, response) {
+            console.log(request);
+            response.writeHead(404);
+            response.write('Not Found');
+            response.end();
+        }).listen(1337);
 }
 
-// ------------------------------------------------------------------------- //
-//                            database stuff                                 //
-// ------------------------------------------------------------------------- //
+function initializeConnection(server) {
+    var io = require('socket.io').listen(server);
 
-var db = new dbengine.Db('./db', {});
-var questionDB = require('./questions.js');
-questionDB.initializeDB('quiz_db', db);
-
-// ------------------------------------------------------------------------- //
-//                            authentication                                 //
-// ------------------------------------------------------------------------- //
-
-var userCollection = db.collection('user_db');
-userCollection.update({username: "admin"}, {username: "admin", password: "admin", token: null}, {upsert:true});
-
-var activeTokens = {};
-loadSessionTokens();
-
-var clientScores = {};
-
-function loadSessionTokens() {
-
-}
-
-function loginUser(user, password, callback) {
-    userCollection.findOne({username: user} , function(err, item) {
-        console.log(item);
-        if (err) {
-            console.log(err);
-            callback("unknown user", null);
-            return;
-        }
-        else if (item.password == password) {
-            var token = generateUserToken(user);
-            activeTokens[token] = user;
-            return callback(true, token); // success
-        } else return callback(false, null); // invalid password
+    io.sockets.on('connection', function(socket) {
+        socket.on('newQuestionRequest', handleNewQuestionRequest);
+        socket.on('verifyAnswerRequest', handleVerifyAnswerRequest);
+        socket.on('tryLoginRequest', handleTryLoginRequest);
+        socket.on('tryRegistrationRequest', handleTryRegistrationRequest); 
     });
+
+    return io;
 }
 
-function logoutUser(user, token, callback) {
-    userCollection.findOne({username: user} , function(err, item) {
-        if (err) {
-            callback('unknown user', null);
-            return;
-        }
-        else if (item.token != token) {
-            console.log('Tokens different, this should not happen');
-            return callback(false);
-        }
-        item.token = null;
-        delete activeTokens.token;
-        return callback(true);
-    });
+function send(message, parameters) {
+    io.sockets.emit(message, parameters);
 }
 
-function registerUser(user, password, callback) {
-    userCollection.findOne({username: user} , function(err, item) {
-        if (err == null && item != null) {
-            return callback(false);
-        } else {
-            userCollection.save({username: user, password: password}, {save:true});
-            callback(true);
-        }
-    });
+// request handling -------------------------------------------------------- //
+
+function handleNewQuestionRequest(data) {
+    if(!checkToken(data['token'])) { return; }
+
+    var question = getNewQuestion(data['token']);
+    send('newQuestionResponse', { id: question.id, 
+            question: question.question, answers: question.answers });
 }
 
-function generateUserToken(user) {
-    var token = hat();
-    userCollection.update({username: user}, { $set: { token: token } }, {});
-    return token;
+function handleVerifyAnswerRequest(data) {
+    if(!checkToken(data['token'])) { return; }
+
+    var isCorrect = verifyAnswer(data['token'], data['questionId'],
+        data['answerIndex']);
+    send('verifyAnswerResponse', { result: isCorrect ? 1 : 0 });
 }
 
-function confirmToken(token) {
-    var result = activeTokens[token] && (activeTokens[token] != null);
-    console.log('Checking token: ' + token + '[' + result + ']');
-    if (!result) {
-        io.sockets.emit('invalidTokenResponse', { userToken: token });
+function handleTryLoginRequest(data) {
+    var token = loginUser(data['username'], data['password']);
+    send('tryLoginResponse', { token: token});
+}
+
+function handleTryRegistrationRequest(data) {
+    var token = registerUser(data['username'], data['password']);
+    send('tryRegistrationResponse', { token: token });
+}
+
+// questions & answers ----------------------------------------------------- //
+
+function getNewQuestion(token) {
+    return storage.loadRandomQuestion();
+}
+
+function verifyAnswer(token, questionId, answerIndex) {
+    var question = storage.loadQuestionById(questionId);
+    var isCorrect = (question.correctAnswerIndex == answerIndex);
+    updateClientScore(token, isCorrect);
+    return isCorrect;
+}
+
+// authentication ---------------------------------------------------------- //
+
+function loginUser(username, password) {
+    var user = storage.loadUserByName(username);
+    return user == null || user.password != password ? null :
+        generateSessionToken(user);
+}
+
+function registerUser(username, password) {
+    var user = storage.loadUserByName(username);
+    if(user) {
+        return null;
+    } else {
+        user = storage.createUser(username, password);
+        storage.storeUser(user);
+        return loginUser(username, password);
     }
-    return result;
 }
 
-function getAndResetClientScore(token) {
-    var user = activeTokens[token]; // todo assert that user exists
-    var score = clientScores[user];
-    clientScores[user] = 0;
-    console.log("Score: ", user, score);
-    return score;
+function generateSessionToken(user) {
+    user.token = hat();
+    storage.storeUser(user);
+    return user.token;
 }
+
+function checkToken(token) {
+    var user = storage.loadUserByToken(token);
+    if(user == null) {
+        send('invalidTokenResponse', { token: token });
+        return false;
+    }
+    return true;
+}
+
+// highscore --------------------------------------------------------------- //
 
 function updateClientScore(token, isCorrect) {
-    var user = activeTokens[token]; // todo assert that user exists
-    var score = clientScores[user];
-    if (!score || score == undefined) {
-        clientScores[user] = 0;
-    }
-    if (isCorrect) clientScores[user]++;
+    var user = storage.loadUserByToken(token);
+    var score = storage.loadScoreForUser(user);
+    if(score == null) { score = storage.createScore(user.username, 0, 0); }
+    if(isCorrect) { score.correctAnswers++; }
+    score.questionsAnswered++;
+    storage.storeScore(score);
 }
-
-// ------------------------------------------------------------------------- //
-//                     server communication stuff                            //
-// ------------------------------------------------------------------------- //
-
-// start up server
-var app = http.createServer(function (request, response) {
-    console.log(request);
-    response.writeHead(404);
-    response.write('Not Found');
-    response.end();
-}).listen(1337);
-
-var io = require('socket.io').listen(app);
-
-io.sockets.on('connection', function(socket) {
-
-    socket.on('newQuestionRequest', function(data) {
-        console.log(data);
-        questionDB.loadQuestion(data['currentQuestion'], function(current) {
-            var token = data['userToken'];
-            if (confirmToken(token)) {
-                if (current == null) {
-                    io.sockets.emit('newQuestionResponse', { question: null, answers: null, score: getAndResetClientScore(token) }); // last question in quiz
-                } else {
-                    io.sockets.emit('newQuestionResponse', { question: current.text, answers: current.answers }); 
-                }                
-            }
-        });
-    });
-
-    socket.on('verifyAnswerRequest', function(data) {
-        questionDB.loadQuestion(data['questionIndex'], function(current) {
-            var token = data['userToken'];
-            if (confirmToken(token)) {
-                var isCorrect = current.correctAnswer == data['answer'];
-                updateClientScore(token, isCorrect);
-                io.sockets.emit('verifyAnswerResponse', { result: isCorrect ? 1: 0});
-            }
-        });
-    });
-
-    socket.on('tryLoginRequest', function(data) {
-        loginUser(data['user'], data['password'], function(current, token) {
-            io.sockets.emit('tryLoginResponse', { result: current, userToken: token});
-        });
-    });
-
-    socket.on('tryRegistrationRequest', function(data) {
-        registerUser(data['user'], data['password'], function(current, token) {
-            io.sockets.emit('tryRegistrationResponse', { result: current });
-        });
-    });
-});

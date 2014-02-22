@@ -1,67 +1,84 @@
-var currentHead = 1;
-var currentFace = 3;
-var currentHat = 1;
-
-var NUM_HEADS = 3;
-var NUM_FACES = 3;
-var NUM_HATS = 3;
-
 AvatarElement = {
-    HEAD: 'head',
-    FACE: 'face',
-    HAT: 'hat'
+    BODY: 'Body',
+    EYES: 'Eyes',
+    HAIR: 'Hair',
+    ACCESSOIRE: 'Accessoire',
+    MOUTH: 'Mouth'
 }
 
-var canvas = 'avatarCanvas';
-var c = null;
+var NUM_BODIES = 6;
+var NUM_ACCESSOIRES = 6;
+var NUM_HAIRS = 5;
+var NUM_EYES = 6;
+var NUM_MOUTHS = 6;
+
+var currentBody = 1;
+var currentAccessoire = 1;
+var currentHair = 1;
+var currentEyes = 1;
+var currentMouths = 1;
 
 window.onload = function() {
-	c = document.getElementById(canvas);
-	var dims = getDimensions();
-  	c.width = dims.width - 4;
-    c.height= dims.height - 4;
-
-  	drawImage(AvatarElement.HEAD, currentHead);
-	drawImage(AvatarElement.FACE, currentFace);
+	drawAvatar();
 }
 
 function drawImage(elementType, index) {
-	var context = c.getContext('2d');
-	if (context) {
-		var img = new Image();
-		img.src = "./images/" + elementType + "/" + index + ".png";
-		img.onload = function(err) {
-			context.drawImage(img, 0, 0);
-		};
-	}
+	console.log(elementType + index);
+	$('#'+elementType).attr('src', './avatars/' + elementType + index + '.png');
 }
 
-function displayNextHead() {
-	drawImage(AvatarElement.HEAD, currentHead == NUM_HATS ? 1 : ++currentHead);
-	drawImage(AvatarElement.FACE, currentFace);
+function previousBody() {
+	currentBody = currentBody == 1 ? NUM_BODIES : --currentBody;
+	drawImage(AvatarElement.BODY, currentBody);
 }
 
-function displayPreviousHead() {
-	drawImage(AvatarElement.HEAD, currentHead == 1 ? NUM_HATS : --currentHead);
-	drawImage(AvatarElement.FACE, currentFace);	
+function nextBody() {
+	currentBody = currentBody == NUM_BODIES ? 1 : ++currentBody;
+	drawImage(AvatarElement.BODY, currentBody);
 }
 
-function displayNextFace() {
-	drawImage(AvatarElement.FACE, currentFace == NUM_FACES ? 1 : ++currentFace);
+function previousAccessoire() {
+	currentAccessoire = currentAccessoire == 1 ? NUM_ACCESSOIRES : --currentAccessoire;
+	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
 }
 
-function displayPreviousFace() {
-	drawImage(AvatarElement.FACE, currentFace == 1 ? NUM_FACES : --currentFace);
+function nextAccessoire() {
+	currentAccessoire = currentAccessoire == NUM_ACCESSOIRES ? 1 : ++currentAccessoire;
+	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
 }
 
-function getDimensions() {
-	var 
-		width = $(window).width(),
-		height = $(window).height(),
-		hHeight = $('header').outerHeight() || 0,
-		fHeight = $('footer').outerHeight() || 0;
-	return {
-      width: width,
-      height: height - hHeight - fHeight
-    };
+function previousHair() {
+	currentAccessoire = currentAccessoire == 1 ? NUM_ACCESSOIRES : --currentAccessoire;
+	drawImage(AvatarElement.HAIR, currentAccessoire);
+}
+
+function nextHair() {
+	currentAccessoire = currentAccessoire == NUM_ACCESSOIRES ? 1 : ++currentAccessoire;
+	drawImage(AvatarElement.HAIR, currentAccessoire);
+}
+
+function previousEyes() {
+	currentEyes = currentEyes == 1 ? NUM_EYES : --currentEyes;
+	drawImage(AvatarElement.EYES, currentEyes);
+}
+
+function nextEyes() {
+	currentEyes = currentEyes == NUM_EYES ? 1 : ++currentEyes;
+	drawImage(AvatarElement.EYES, currentEyes);
+}
+
+function drawAvatar() {
+	drawImage(AvatarElement.BODY, currentBody);
+	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
+	drawImage(AvatarElement.MOUTH, currentMouths);
+	drawImage(AvatarElement.EYES, currentEyes);
+	drawImage(AvatarElement.HAIR, currentHair);
+}
+
+function avatar(body, accessoire, eyes, mouth, hair) {
+	this.body = body;
+	this.accessoire = accessoire;
+	this.eyes = eyes;
+	this.mouth = mouth;
+	this.hair = hair;
 }

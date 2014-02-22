@@ -3,8 +3,13 @@ var lastAnswer = -1;
 
 function initializeQuestionManagement() {
 	registerForNewQuestionResponse(onNewQuestion);
+    registerForNewQuizResponse(onNewQuiz);
     registerForVerifyAnswerResponse(onVerifyAnswer);
     registerForQuizEndedResponse(onQuizEnded);
+}
+
+function showNewQuiz() {    
+    requestNewQuiz(currentToken);
 }
 
 function showNewQuestion() {
@@ -64,4 +69,8 @@ function onVerifyAnswer(isCorrect) {
 
 function onQuizEnded(score) {
     showResultPage(score);   
+}
+
+function onNewQuiz(quizToken) {
+    requestNewQuestionInQuiz(currentToken, quizToken);
 }

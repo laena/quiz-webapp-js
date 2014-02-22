@@ -14,6 +14,14 @@ function sendMessage(messageName, parameters) {
 
 // Server Requests --------------------------------------------------------- //
 
+function requestNewQuiz(token) {
+	sendMessage('newQuizRequest', { token: token });
+}
+
+function requestNewQuestionInQuiz(token, quizToken) {
+	sendMessage('newQuestionRequest', { token: token, quizToken: quizToken });
+}
+
 function requestNewQuestion(token) {
 	sendMessage('newQuestionRequest', { token: token });
 }
@@ -36,6 +44,14 @@ function requestRegistrationTrial(username, password) {
 
 
 // Server Response events -------------------------------------------------- //
+
+function registerForNewQuizResponse(callback) {
+	registerSocketCallback('newQuizResponse', 
+		function(data) { 
+			callback(data['quizToken']);
+		}
+	);
+}
 
 function registerForNewQuestionResponse(callback) {
 	registerSocketCallback('newQuestionResponse', 

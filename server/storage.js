@@ -181,3 +181,33 @@ function updateScore(score) {
     scoreDbTable.update({username: user.username}, scoreToDocument(score), 
         {upsert:true});
 }
+
+// quiz --------------------------------------------------------------- //
+
+var quizDbTable = db.collection("quizzes");
+var quizCache = new Object();
+
+function quiz(arguments) {
+    quiz.beginTime = arguments[0];
+    quiz.token = arguments[1];
+    quiz.type = arguments[2]
+}
+
+function quizToDocument(quiz) {
+    return { beginTime: quiz.beginTime, token: quiz.token, type: quiz.type
+    };
+}
+
+function documentToQuiz(doc) {
+    return new quiz([doc.beginTime, doc.token, doc.type]);
+}
+
+function initializeQuizCache() {
+    initializeCache(quizCache, quizDbTable, documentToQuiz, '_id');
+}
+
+function updateQuiz(quiz) {
+    quizCache[quiz.beginTime] = quiz;
+    quizDbTable.update({beginTime: quiz.beginTime}, quizToDocument(quiz), 
+        {upsert:true});
+}

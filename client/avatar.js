@@ -8,24 +8,29 @@ AvatarElement = {
 
 var NUM_BODIES = 6;
 var NUM_ACCESSOIRES = 6;
-var NUM_HAIRS = 5;
 var NUM_EYES = 6;
 var NUM_MOUTHS = 6;
+var NUM_HAIRS = 5;
 
 var currentBody = 1;
 var currentAccessoire = 1;
-var currentHair = 1;
 var currentEyes = 1;
 var currentMouths = 1;
+var currentHair = 1;
 
 window.onload = function() {
 	drawAvatar();
 }
 
 function drawImage(elementType, index) {
-	console.log(elementType + index);
 	$('#'+elementType).attr('src', './avatars/' + elementType + index + '.png');
 }
+
+function getCurrentAvatar() {
+	return new avatar(currentBody, currentAccessoire, currentEyes, currentMouths, currentHair);
+}
+
+// Button handling ------------------------------------------------ //
 
 function previousBody() {
 	currentBody = currentBody == 1 ? NUM_BODIES : --currentBody;

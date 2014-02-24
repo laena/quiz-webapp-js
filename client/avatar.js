@@ -1,89 +1,26 @@
-AvatarElement = {
-    BODY: 'Body',
-    EYES: 'Eyes',
-    HAIR: 'Hair',
-    ACCESSOIRE: 'Accessoire',
-    MOUTH: 'Mouth'
-}
-
-var NUM_BODIES = 6;
-var NUM_ACCESSOIRES = 6;
-var NUM_EYES = 6;
-var NUM_MOUTHS = 6;
-var NUM_HAIRS = 5;
-
-var currentBody = 1;
-var currentAccessoire = 1;
-var currentEyes = 1;
-var currentMouths = 1;
-var currentHair = 1;
+var avatarElements = new Array();
+avatarElements[0] = [1, 6, 'body'];
+avatarElements[1] = [1, 6, 'eyes'];
+avatarElements[2] = [1, 6, 'mouth'];
+avatarElements[3] = [1, 5, 'hair'];
+avatarElements[4] = [1, 6, 'accessoire'];
 
 window.onload = function() {
-	drawAvatar();
+    for(var i=0; i<avatarElements.length; i++) {
+        drawImage(i);
+    }
 }
 
-function drawImage(elementType, index) {
-	$('#'+elementType).attr('src', './avatars/' + elementType + index + '.png');
+function drawImage(index) {
+	$('#'+avatarElements[index][2]).attr('src', './avatars/' + avatarElements[index][2] + avatarElements[index][0] + '.png');
 }
 
-function getCurrentAvatar() {
-	return new avatar(currentBody, currentAccessoire, currentEyes, currentMouths, currentHair);
+function previous(index) {
+    avatarElements[index][0] = avatarElements[index][0] == 1 ? avatarElements[index][1] : --avatarElements[index][0];
+    drawImage(index);
 }
 
-// Button handling ------------------------------------------------ //
-
-function previousBody() {
-	currentBody = currentBody == 1 ? NUM_BODIES : --currentBody;
-	drawImage(AvatarElement.BODY, currentBody);
-}
-
-function nextBody() {
-	currentBody = currentBody == NUM_BODIES ? 1 : ++currentBody;
-	drawImage(AvatarElement.BODY, currentBody);
-}
-
-function previousAccessoire() {
-	currentAccessoire = currentAccessoire == 1 ? NUM_ACCESSOIRES : --currentAccessoire;
-	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
-}
-
-function nextAccessoire() {
-	currentAccessoire = currentAccessoire == NUM_ACCESSOIRES ? 1 : ++currentAccessoire;
-	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
-}
-
-function previousHair() {
-	currentAccessoire = currentAccessoire == 1 ? NUM_ACCESSOIRES : --currentAccessoire;
-	drawImage(AvatarElement.HAIR, currentAccessoire);
-}
-
-function nextHair() {
-	currentAccessoire = currentAccessoire == NUM_ACCESSOIRES ? 1 : ++currentAccessoire;
-	drawImage(AvatarElement.HAIR, currentAccessoire);
-}
-
-function previousEyes() {
-	currentEyes = currentEyes == 1 ? NUM_EYES : --currentEyes;
-	drawImage(AvatarElement.EYES, currentEyes);
-}
-
-function nextEyes() {
-	currentEyes = currentEyes == NUM_EYES ? 1 : ++currentEyes;
-	drawImage(AvatarElement.EYES, currentEyes);
-}
-
-function drawAvatar() {
-	drawImage(AvatarElement.BODY, currentBody);
-	drawImage(AvatarElement.ACCESSOIRE, currentAccessoire);
-	drawImage(AvatarElement.MOUTH, currentMouths);
-	drawImage(AvatarElement.EYES, currentEyes);
-	drawImage(AvatarElement.HAIR, currentHair);
-}
-
-function avatar(body, accessoire, eyes, mouth, hair) {
-	this.body = body;
-	this.accessoire = accessoire;
-	this.eyes = eyes;
-	this.mouth = mouth;
-	this.hair = hair;
+function next(index) {
+    avatarElements[index][0] = avatarElements[index][0] == avatarElements[index][1] ? 1 : ++avatarElements[index][0];
+    drawImage(index);
 }

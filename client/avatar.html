@@ -32,35 +32,54 @@
     <h1>Choose Your Avatar!</h1>
     <!--<div data-role="main"><canvas id="avatarCanvas" width="220px" heigh="250px"></canvas></div>-->
     <div style="height:200px; width:500px;" data-role="content">
-      <img id="Body" style="position:absolute; top:150px; left:350px; z-index:0;"/>
-      <img id="Eyes" style="position:absolute; top:210px; left:410px; z-index:3;"/>
-      <img id="Accessoire" style="position:absolute; top:120px; left:350px; z-index:5;"/>
+      <img id="body" style="position:absolute; top:150px; left:350px; z-index:0;"/>
+      <img id="eyes" style="position:absolute; top:150px; left:350px; z-index:1;"/>
+      <img id="mouth" style="position:absolute; top:150px; left:350px; z-index:2;"/>
+      <img id="hair" style="position:absolute; top:150px; left:350px; z-index:3;"/>
+      <img id="accessoire" style="position:absolute; top:150px; left:350px; z-index:4;"/>
     </div>
 
     <div class="ui-grid-b">
       <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previousBody()"></a>
+        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(0)"></a>
       </div>
       <div class="ui-block-b"><h3>Body</h3></div>
       <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="nextBody()"></a>
+        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(0)"></a>
       </div>
 
       <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previousAccessoire()"></a>
-      </div>
-      <div class="ui-block-b"><h3>Accessoire</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="nextAccessoire()"></a>
-      </div>
-
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previousEyes()"></a>
+        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(1)"></a>
       </div>
       <div class="ui-block-b"><h3>Eyes</h3></div>
       <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="nextEyes()"></a>
+        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(1)"></a>
       </div>
+
+      <div class="ui-block-a">
+        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(2)"></a>
+      </div>
+      <div class="ui-block-b"><h3>Mouth</h3></div>
+      <div class="ui-block-c">
+        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(2)"></a>
+      </div>
+
+      <div class="ui-block-a">
+        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(3)"></a>
+      </div>
+      <div class="ui-block-b"><h3>Hair</h3></div>
+      <div class="ui-block-c">
+        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(3)"></a>
+      </div>
+
+      <div class="ui-block-a">
+        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(4)"></a>
+      </div>
+      <div class="ui-block-b"><h3>Accessoire</h3></div>
+      <div class="ui-block-c">
+        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(4)"></a>
+      </div>
+
     </div>
   </div> 
 

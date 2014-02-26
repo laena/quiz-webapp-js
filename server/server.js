@@ -16,7 +16,8 @@ var io = initializeConnection(server);
 function createServer() {
     return http.createServer(
         function (request, response) {
-            console.log(request);
+            console.log('REQUEST:  ' + request);
+            console.log('RESPONSE: ' + response);
             response.writeHead(404);
             response.write('Not Found');
             response.end();
@@ -43,61 +44,79 @@ function send(message, parameters) {
 // request handling -------------------------------------------------------- //
 
 function handleNewQuestionRequest(data) {
-    if(!checkToken(data['token'])) { return; }
-
-    var question = getNewQuestion(data['token']);
-    send('newQuestionResponse', { id: question.id, 
-            question: question.question, answers: question.answers });
+    console.log('NewQuestionRequest:');
+    console.log(data);
+    checkToken(data['token'], function(user) {
+        getNewQuestion(data['token'], function(question) {
+            send('newQuestionResponse', { id: question.id, 
+                question: question.question, answers: question.answers });
+        })
+    });
 }
 
 function handleVerifyAnswerRequest(data) {
-    if(!checkToken(data['token'])) { return; }
-
-    var isCorrect = verifyAnswer(data['token'], data['questionId'],
-        data['answerIndex']);
-    send('verifyAnswerResponse', { result: isCorrect ? 1 : 0 });
+    console.log('VerifyAnswerRequest:');
+    console.log(data);
+    checkToken(data['token'], function(user) {
+        verifyAnswer(user, data['questionId'], data['answerIndex'],
+            function(isCorrect) {
+                send('verifyAnswerResponse', { result: isCorrect ? 1 : 0 });
+            })
+    });
 }
 
 function handleTryLoginRequest(data) {
-    var token = loginUser(data['username'], data['password']);
-    send('tryLoginResponse', { token: token});
+    console.log('TryLoginRequest:');
+    console.log(data);
+    loginUser(data['username'], data['password'], function(token) {
+        send('tryLoginResponse', { token: token});
+    });
 }
 
 function handleTryRegistrationRequest(data) {
-    var token = registerUser(data['username'], data['password']);
-    send('tryRegistrationResponse', { token: token });
+    console.log('TryRegistrationRequest:');
+    console.log(data);
+    registerUser(data['username'], data['password'], function(token) {
+        send('tryRegistrationResponse', { token: token });
+    });
 }
 
 // questions & answers ----------------------------------------------------- //
 
-function getNewQuestion(token) {
-    return storage.loadRandomQuestion();
+function getNewQuestion(token, callback) {
+    storage.loadRandomQuestion(callback);
 }
 
-function verifyAnswer(token, questionId, answerIndex) {
-    var question = storage.loadQuestionById(questionId);
-    var isCorrect = (question.correctAnswerIndex == answerIndex);
-    updateClientScore(token, isCorrect);
-    return isCorrect;
+function verifyAnswer(user, questionId, answerIndex, callback) {
+    storage.loadQuestionById(questionId, function(question) {
+        var isCorrect = (question.correctAnswerIndex == answerIndex);
+        updateScore(user, isCorrect);
+        callback(isCorrect);
+    });
 }
 
 // authentication ---------------------------------------------------------- //
 
-function loginUser(username, password) {
-    var user = storage.loadUserByName(username);
-    return user == null || user.password != password ? null :
-        generateSessionToken(user);
+function loginUser(username, password, callback) {
+    storage.loadUserByName(username, function(user) {
+        if(user && user.password == password) {
+            callback(generateSessionToken(user));
+        } else {
+            callback(null);
+        }        
+    });
 }
 
-function registerUser(username, password) {
-    var user = storage.loadUserByName(username);
-    if(user) {
-        return null;
-    } else {
-        user = storage.createUser(username, password);
-        storage.storeUser(user);
-        return loginUser(username, password);
-    }
+function registerUser(username, password, callback) {
+    storage.loadUserByName(username, function(user) {
+        if(user) { // user already in the db -> new registration not possible
+            callback(null);
+        } else {
+            user = storage.createUser(username, password);
+            storage.storeUser(user);
+            callback(generateSessionToken(user));
+        }
+    });
 }
 
 function generateSessionToken(user) {
@@ -106,22 +125,25 @@ function generateSessionToken(user) {
     return user.token;
 }
 
-function checkToken(token) {
-    var user = storage.loadUserByToken(token);
-    if(user == null) {
-        send('invalidTokenResponse', { token: token });
-        return false;
-    }
-    return true;
+function checkToken(token, onValidCallback) {
+    console.log('checkToken');
+    var user = storage.loadUserByToken(token, function(user) {
+        console.log(user);
+        if(user) {
+            onValidCallback(user);
+        } else {
+            send('invalidTokenResponse', { token: token });
+        }
+    });
 }
 
 // highscore --------------------------------------------------------------- //
 
-function updateClientScore(token, isCorrect) {
-    var user = storage.loadUserByToken(token);
-    var score = storage.loadScoreForUser(user);
-    if(score == null) { score = storage.createScore(user.username, 0, 0); }
-    if(isCorrect) { score.correctAnswers++; }
-    score.questionsAnswered++;
-    storage.storeScore(score);
+function updateScore(user, isCorrect) {
+    storage.loadScoreForUser(user, function(score) {
+        if(score == null) { score = storage.createScore(user.username, 0, 0); }
+        if(isCorrect) { score.correctAnswers++; }
+        score.questionsAnswered++;
+        storage.storeScore(score);
+    });
 }

@@ -49,11 +49,15 @@ function tryToRegisterUser() {
     } else {
         requestRegistrationTrial( 
             getInputValue('registerUsernameInput'),
-            getInputValue('registerPasswordInput')
+            getInputValue('registerPasswordInput'),
+            getCurrentAvatar()// TODO: something like defaultAvatar()
         );
     }    
 }
 
+function saveAvatar() {
+    requestAvatarChange(currentToken, getCurrentAvatar());
+}
 
 // Server response handling ------------------------------------------------ //
 

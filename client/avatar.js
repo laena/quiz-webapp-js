@@ -6,7 +6,11 @@ avatarElements[3] = [1, 5, 'hair'];
 avatarElements[4] = [1, 6, 'accessoire'];
 
 window.onload = function() {
-    for(var i=0; i<avatarElements.length; i++) {
+    refresh();
+}
+
+function refresh() {
+	for(var i=0; i<avatarElements.length; i++) {
         drawImage(i);
     }
 }
@@ -23,4 +27,24 @@ function previous(index) {
 function next(index) {
     avatarElements[index][0] = avatarElements[index][0] == avatarElements[index][1] ? 1 : ++avatarElements[index][0];
     drawImage(index);
+}
+
+function getCurrentAvatar() {
+	return {
+		body: avatarElements[0][0],
+		eyes: avatarElements[1][0],
+		mouth: avatarElements[2][0],
+		hair: avatarElements[3][0],
+		accessoire: avatarElements[4][0],
+	}
+}
+
+function loadAvatar(avatar) {
+	avatarElements[0][0] = avatar.body;
+	avatarElements[1][0] = avatar.eyes;
+	avatarElements[2][0] = avatar.mouth;
+	avatarElements[3][0] = avatar.hair;
+	avatarElements[4][0] = avatar.accessoire;
+
+	refresh();
 }

@@ -31,7 +31,8 @@ function initializeConnection(server) {
         socket.on('newQuestionRequest', handleNewQuestionRequest);
         socket.on('verifyAnswerRequest', handleVerifyAnswerRequest);
         socket.on('tryLoginRequest', handleTryLoginRequest);
-        socket.on('tryRegistrationRequest', handleTryRegistrationRequest); 
+        socket.on('tryRegistrationRequest', handleTryRegistrationRequest);
+        socket.on('avatarChangeRequest', handleAvatarChangeRequest);
     });
 
     return io;
@@ -42,6 +43,16 @@ function send(message, parameters) {
 }
 
 // request handling -------------------------------------------------------- //
+
+function handleAvatarChangeRequest(data) {
+    console.log('ChangeAvatarRequest:');
+    console.log(data);
+    checkToken(data['token'], function(user) {
+        user.avatar = data['avatar'];
+        console.log(user.avatar);
+        storage.storeUser(user);
+    });
+}
 
 function handleNewQuestionRequest(data) {
     console.log('NewQuestionRequest:');
@@ -76,7 +87,7 @@ function handleTryLoginRequest(data) {
 function handleTryRegistrationRequest(data) {
     console.log('TryRegistrationRequest:');
     console.log(data);
-    registerUser(data['username'], data['password'], function(token) {
+    registerUser(data['username'], data['password'], data['avatar'], function(token) {
         send('tryRegistrationResponse', { token: token });
     });
 }
@@ -107,12 +118,12 @@ function loginUser(username, password, callback) {
     });
 }
 
-function registerUser(username, password, callback) {
+function registerUser(username, password, avatar, callback) {
     storage.loadUserByName(username, function(user) {
         if(user) { // user already in the db -> new registration not possible
             callback(null);
         } else {
-            user = storage.createUser(username, password);
+            user = storage.createUser(username, avatar, password);
             storage.storeUser(user);
             callback(generateSessionToken(user));
         }

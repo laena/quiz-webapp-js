@@ -127,19 +127,23 @@ var userDbTable = db.collection("users");
 
 function user(arguments) {
     this.username = arguments[0];
-    this.password = arguments[1];
-    this.token = arguments[2];
+    this.avatar = arguments[1];
+    this.password = arguments[2];
+    this.token = arguments[3];
 }
 
 function userToDocument(user) {
-    return { username: user.username, password: user.password, 
-        token: user.token
+    return {
+        username: user.username,
+        password: user.password, 
+        token: user.token,
+        avatar: user.avatar
     };
 }
 
 function documentToUser(doc) {
     if(doc) {
-        return new user([doc.username, doc.password, doc.token]);
+        return new user([doc.username, doc.avatar, doc.password, doc.token]);
     } else {
         return null;
     }

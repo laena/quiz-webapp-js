@@ -14,6 +14,12 @@ function sendMessage(messageName, parameters) {
 
 // Server Requests --------------------------------------------------------- //
 
+function requestAvatarChange(token, avatar) {
+	sendMessage('avatarChangeRequest', {
+		token: token, avatar: avatar
+	});
+}
+
 function requestNewQuiz(token) {
 	sendMessage('newQuizRequest', { token: token });
 }
@@ -36,12 +42,11 @@ function requestLoginTrial(username, password) {
 	sendMessage('tryLoginRequest', {username: username, password: password});
 }
 
-function requestRegistrationTrial(username, password) {
+function requestRegistrationTrial(username, password, avatar) {
 	sendMessage('tryRegistrationRequest', {
-		username: username, password: password
+		username: username, password: password, avatar: avatar
 	});
 }
-
 
 // Server Response events -------------------------------------------------- //
 

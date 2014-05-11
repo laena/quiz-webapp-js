@@ -11,8 +11,6 @@
   <link rel="stylesheet" href="css/client.custom.css" />
   <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
   <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
-  <!-- <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css"> -->
-
   <!-- SCRIPTS -->
   <script type="application/javascript" language="javascript" src="thirdparty/jquery-1.10.2.min.js"></script>
   <script type="application/javascript" language="javascript" src="thirdparty/jquery.mobile-1.4.1.min.js"></script>
@@ -25,6 +23,7 @@
   <script type="application/javascript" language="javascript" src="highscore.js"></script>
   <script type="application/javascript" language="javascript" src="client.js"></script>
   <script type="application/javascript" language="javascript" src="avatar.js"></script>
+  <script type="application/javascript" language="javascript" src="theme.js"></script>
 </head>
 
 <body onload="initializeClient()">
@@ -37,15 +36,15 @@
         <div class="ui-btn-right">
           <a href="#avatarPage" data-role="button" data-icon="gear" data-iconpos="notext" data-transition="flip"></a>
         </div>
-          <div class="ui-btn-left" style="height:100px;">
-            <div data-role="content">
-              <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
-              <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
-              <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
-              <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
-              <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
-            </div>
+        <div class="ui-btn-left" style="height:100px;">
+          <div data-role="content">
+            <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
+            <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
+            <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
+            <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
+            <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
           </div>
+        </div>
       </div>
       <div role="main" class="ui-content">
         <h1>Welcome to the quiz!</h1>
@@ -120,6 +119,17 @@
           </div>
           <button onclick="saveAvatar()" id="saveAvatarButton">Save Avatar</button>
         </div>
+        <div data-role="fieldcontain">
+        <form>
+        <label for="themeSelect" class="select">Choose a theme:</label>
+        <select name="themeSelect" id="themeSelect">
+          <option value="standard" onclick="">Standard</option>
+          <option value="terminal">Terminal</option>
+          <option value="pink">Pink</option>
+          <option value="meadow">Meadow</option>
+        </select>
+        </form>
+        </div>
       </div>
       <div data-role="footer">Ads go here! :)</div>
     </div>
@@ -133,6 +143,15 @@
         <div class="ui-btn-right">
           <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
           <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
+        </div>
+        <div class="ui-btn-left" style="height:100px;">
+          <div data-role="content">
+            <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
+            <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
+            <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
+            <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
+            <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
+          </div>
         </div>
       </div>
       <div role="main" class="ui-content">
@@ -155,6 +174,15 @@
         <div class="ui-btn-right">
           <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
           <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
+        </div>
+        <div class="ui-btn-left" style="height:100px;">
+          <div data-role="content">
+            <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
+            <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
+            <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
+            <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
+            <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
+          </div>
         </div> 
       </div>
       <div role="main" class="ui-content">
@@ -173,6 +201,15 @@
         <div class="ui-btn-right">
           <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
           <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
+        </div>
+        <div class="ui-btn-left" style="height:100px;">
+          <div data-role="content">
+            <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
+            <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
+            <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
+            <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
+            <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
+          </div>
         </div> 
       </div>
       <div role="main" class="ui-content">

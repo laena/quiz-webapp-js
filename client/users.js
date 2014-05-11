@@ -113,4 +113,6 @@ function initializeInputCallbacks() {
     registerOnKeyDown('registerUsernameInput', 13, tryToRegisterUser);
     registerOnKeyDown('registerPasswordInput', 13, tryToRegisterUser);
     registerOnKeyDown('registerPasswordRepeatInput', 13, tryToRegisterUser);
+
+    registerOnKeyDown('themeSelect', 13, updateTheme);
 }

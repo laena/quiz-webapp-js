@@ -3,12 +3,12 @@ var currentToken = null;
 function initializeUserManagement() {
 	registerForTryLoginResponse(onTryLoginResponse);
     registerForTryRegistrationResponse(onTryRegistrationResponse);
-    registerForInvalidTokenResponse(onInvalidToken);
+    registerForInvalidTokenResponse(onInvalidTokenResponse);
     registerForAvatarResponse(onAvatarResponse);
-    acquiretoken();
+    acquireToken();
 }
 
-function acquiretoken() {
+function acquireToken() {
 	currentToken = localStorage.getItem('token');
     if (currentToken == null) {
         showPopupDelayed('loginPopup', 500);
@@ -88,7 +88,7 @@ function onTryRegistrationResponse(token) {
     }
 }
 
-function onInvalidToken(token) {
+function onInvalidTokenResponse(token) {
 	showPage('startPage');
 	showPopupDelayed('loginPopup', 500);
 }

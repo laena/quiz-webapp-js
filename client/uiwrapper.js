@@ -80,7 +80,7 @@ function closePopup(id) {
 
 function addRowToTable(id, columnValues) {
 	var content = '';
-	for(var i=0; i<columnValues.length; i++) {
+	for (var i=0; i<columnValues.length; i++) {
 		content += '<td>' + columnValues[i] + '</td>';
 	}
 	getElementBy(id + ' tbody').append('<tr>' + content + '</tr>');

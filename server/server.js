@@ -89,8 +89,8 @@ function handleVerifyAnswerRequest(data) {
 function handleTryLoginRequest(data) {
     console.log('TryLoginRequest:');
     console.log(data);
-    loginUser(data['username'], data['password'], function(token) {
-        send('tryLoginResponse', { token: token });
+    loginUser(data['username'], data['password'], function(token, avatar) {
+        send('tryLoginResponse', { token: token, avatar: avatar });
     });
 }
 
@@ -121,9 +121,9 @@ function verifyAnswer(user, questionId, answerIndex, callback) {
 function loginUser(username, password, callback) {
     storage.loadUserByName(username, function(user) {
         if(user && user.password == password) {
-            callback(generateSessionToken(user));
+            callback(generateSessionToken(user), user.avatar);
         } else {
-            callback(null);
+            callback(null, null);
         }        
     });
 }

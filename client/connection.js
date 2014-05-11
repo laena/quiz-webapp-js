@@ -87,7 +87,7 @@ function registerForVerifyAnswerResponse(callback) {
 
 function registerForTryLoginResponse(callback) {
 	registerSocketCallback('tryLoginResponse', 
-		function(data) { callback(data['token']); }
+		function(data) { callback(data['token'], data['avatar']); }
 	);
 }
 

@@ -59,13 +59,9 @@ function saveAvatar() {
     requestAvatarChange(currentToken, getCurrentAvatar());
 }
 
-function initializeAvatar() {
-    requestAvatar(currentToken);
-}
-
 // Server response handling ------------------------------------------------ //
 
-function onTryLoginResponse(token) {
+function onTryLoginResponse(token, avatar) {
     console.log('onTryLoginResponse:' + token);
     if(token == null) {
         setElementText('loginTextLabel', 
@@ -74,7 +70,8 @@ function onTryLoginResponse(token) {
        currentToken = token;
        localStorage.setItem('token', token);
        closePopup('loginPopup');
-       showPage('startPage'); 
+       loadAvatar(avatar);
+       showPage('startPage');
     }
 }
 

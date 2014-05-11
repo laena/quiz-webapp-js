@@ -6,5 +6,7 @@ function initializeClient() {
     initializeUserManagement();
     initializeQuestionManagement();
     initializeHighscore();
+    
+    initializeAvatar();
 }
 

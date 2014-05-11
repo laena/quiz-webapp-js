@@ -1,43 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Quiz</title>
+  <title>Quiz</title>
 
-    <!-- STYLE -->
-    <link rel="stylesheet" href="css/basic.min.css" />
-    <link rel="stylesheet" href="css/client.custom.css" />
-    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
-    <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
-    <!-- <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css"> -->
+  <!-- STYLE -->
+  <link rel="stylesheet" href="css/basic.min.css" />
+  <link rel="stylesheet" href="css/client.custom.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
+  <!-- <link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css"> -->
 
-    <!-- SCRIPTS -->
-    <script type="application/javascript" language="javascript" src="thirdparty/jquery-1.10.2.min.js"></script>
-    <script type="application/javascript" language="javascript" src="thirdparty/jquery.mobile-1.4.1.min.js"></script>
-    <script type="application/javascript" language="javascript" src="thirdparty/socket.io.min.js"></script>
+  <!-- SCRIPTS -->
+  <script type="application/javascript" language="javascript" src="thirdparty/jquery-1.10.2.min.js"></script>
+  <script type="application/javascript" language="javascript" src="thirdparty/jquery.mobile-1.4.1.min.js"></script>
+  <script type="application/javascript" language="javascript" src="thirdparty/socket.io.min.js"></script>
 
-    <script type="application/javascript" language="javascript" src="connection.js"></script>
-    <script type="application/javascript" language="javascript" src="uiwrapper.js"></script>
-    <script type="application/javascript" language="javascript" src="users.js"></script>
-    <script type="application/javascript" language="javascript" src="questions.js"></script>
-    <script type="application/javascript" language="javascript" src="highscore.js"></script>
-    <script type="application/javascript" language="javascript" src="client.js"></script>
-    <script type="application/javascript" language="javascript" src="avatar.js"></script>
-  </head>
+  <script type="application/javascript" language="javascript" src="connection.js"></script>
+  <script type="application/javascript" language="javascript" src="uiwrapper.js"></script>
+  <script type="application/javascript" language="javascript" src="users.js"></script>
+  <script type="application/javascript" language="javascript" src="questions.js"></script>
+  <script type="application/javascript" language="javascript" src="highscore.js"></script>
+  <script type="application/javascript" language="javascript" src="client.js"></script>
+  <script type="application/javascript" language="javascript" src="avatar.js"></script>
+</head>
 
-  <body onload="initializeClient()">
-
+<body onload="initializeClient()">
     <!-- 
       startPage
     -->
     <div data-role="page" id="startPage">
       <div data-role="header">
-      <h2>Quiz</h2>
+        <h2>Quiz</h2>
         <div class="ui-btn-right">
           <a href="#avatarPage" data-role="button" data-icon="gear" data-iconpos="notext" data-transition="flip"></a>
         </div>
+          <div class="ui-btn-left" style="height:100px;">
+            <div data-role="content">
+              <img class="body" style="height:50%; position:absolute; top:0px; left:0px; z-index:0;"/>
+              <img class="eyes" style="height:50%; position:absolute; top:0px; left:0px; z-index:1;"/>
+              <img class="mouth" style="height:50%; position:absolute; top:0px; left:0px; z-index:2;"/>
+              <img class="hair" style="height:50%; position:absolute; top:0px; left:0px; z-index:3;"/>
+              <img class="accessoire" style="height:50%; position:absolute; top:0px; left:0px; z-index:4;"/>
+            </div>
+          </div>
       </div>
       <div role="main" class="ui-content">
         <h1>Welcome to the quiz!</h1>
@@ -62,58 +70,56 @@
         </div> 
       </div>
       <div role="main" class="ui-content">
-         <h1>Choose Your Avatar!</h1>
-    <!--<div data-role="main"><canvas id="avatarCanvas" width="220px" heigh="250px"></canvas></div>-->
+        <h1>Choose Your Avatar!</h1>
         <div style="height:200px; width:500px;" data-role="content">
-          <img id="body" style="position:absolute; top:150px; left:350px; z-index:0;"/>
-          <img id="eyes" style="position:absolute; top:150px; left:350px; z-index:1;"/>
-          <img id="mouth" style="position:absolute; top:150px; left:350px; z-index:2;"/>
-          <img id="hair" style="position:absolute; top:150px; left:350px; z-index:3;"/>
-          <img id="accessoire" style="position:absolute; top:150px; left:350px; z-index:4;"/>
+          <img class="body" style="position:absolute; top:150px; left:350px; z-index:0;"/>
+          <img class="eyes" style="position:absolute; top:150px; left:350px; z-index:1;"/>
+          <img class="mouth" style="position:absolute; top:150px; left:350px; z-index:2;"/>
+          <img class="hair" style="position:absolute; top:150px; left:350px; z-index:3;"/>
+          <img class="accessoire" style="position:absolute; top:150px; left:350px; z-index:4;"/>
         </div>
+        <div class="ui-grid-b ui-responsive">
+          <div class="ui-block-a">
+            <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(0)"></a>
+          </div>
+          <div class="ui-block-b"><h3>Body</h3></div>
+          <div class="ui-block-c">
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(0)"></a>
+          </div>
 
-    <div class="ui-grid-b">
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(0)"></a>
-      </div>
-      <div class="ui-block-b"><h3>Body</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(0)"></a>
-      </div>
+          <div class="ui-block-a">
+            <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(1)"></a>
+          </div>
+          <div class="ui-block-b"><h3>Eyes</h3></div>
+          <div class="ui-block-c">
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(1)"></a>
+          </div>
 
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(1)"></a>
-      </div>
-      <div class="ui-block-b"><h3>Eyes</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(1)"></a>
-      </div>
+          <div class="ui-block-a">
+            <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(2)"></a>
+          </div>
+          <div class="ui-block-b"><h3>Mouth</h3></div>
+          <div class="ui-block-c">
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(2)"></a>
+          </div>
 
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(2)"></a>
-      </div>
-      <div class="ui-block-b"><h3>Mouth</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(2)"></a>
-      </div>
+          <div class="ui-block-a">
+            <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(3)"></a>
+          </div>
+          <div class="ui-block-b"><h3>Hair</h3></div>
+          <div class="ui-block-c">
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(3)"></a>
+          </div>
 
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(3)"></a>
-      </div>
-      <div class="ui-block-b"><h3>Hair</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(3)"></a>
-      </div>
-
-      <div class="ui-block-a">
-        <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(4)"></a>
-      </div>
-      <div class="ui-block-b"><h3>Accessoire</h3></div>
-      <div class="ui-block-c">
-        <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(4)"></a>
-      </div>
-      <button onclick="saveAvatar()" id="saveAvatarButton">Save Avatar</button>
-      </div>
+          <div class="ui-block-a">
+            <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" onclick="previous(4)"></a>
+          </div>
+          <div class="ui-block-b"><h3>Accessoire</h3></div>
+          <div class="ui-block-c">
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext"onclick="next(4)"></a>
+          </div>
+          <button onclick="saveAvatar()" id="saveAvatarButton">Save Avatar</button>
+        </div>
       </div>
       <div data-role="footer">Ads go here! :)</div>
     </div>
@@ -127,7 +133,7 @@
         <div class="ui-btn-right">
           <a href="#startPage" data-role="button" data-icon="home" data-iconpos="notext" data-transition="flip"></a>
           <a href="#startPage" data-role="button" data-icon="delete" data-iconpos="notext" data-transition="flip" onclick="logoutUser()"></a>
-        </div> 
+        </div>
       </div>
       <div role="main" class="ui-content">
         <h1 id="questionTextLabel">???</h1> 
@@ -217,4 +223,4 @@
     </div>
 
   </body>
-</html>
+  </html>

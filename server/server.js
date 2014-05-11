@@ -33,6 +33,7 @@ function initializeConnection(server) {
         socket.on('tryLoginRequest', handleTryLoginRequest);
         socket.on('tryRegistrationRequest', handleTryRegistrationRequest);
         socket.on('avatarChangeRequest', handleAvatarChangeRequest);
+        socket.on('avatarRequest', handleAvatarRequest);
     });
 
     return io;
@@ -51,6 +52,15 @@ function handleAvatarChangeRequest(data) {
         user.avatar = data['avatar'];
         console.log(user.avatar);
         storage.storeUser(user);
+    });
+}
+
+function handleAvatarRequest(data) {
+    console.log('AvatarRequest:');
+    console.log(data);
+    checkToken(data['token'], function(user) {
+        console.log(user.avatar);
+        send('avatarResponse', { avatar: user.avatar });
     });
 }
 
@@ -80,7 +90,7 @@ function handleTryLoginRequest(data) {
     console.log('TryLoginRequest:');
     console.log(data);
     loginUser(data['username'], data['password'], function(token) {
-        send('tryLoginResponse', { token: token});
+        send('tryLoginResponse', { token: token });
     });
 }
 

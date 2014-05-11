@@ -20,6 +20,10 @@ function requestAvatarChange(token, avatar) {
 	});
 }
 
+function requestAvatar(token) {
+	sendMessage('avatarRequest', { token: token });
+}
+
 function requestNewQuiz(token) {
 	sendMessage('newQuizRequest', { token: token });
 }
@@ -49,6 +53,15 @@ function requestRegistrationTrial(username, password, avatar) {
 }
 
 // Server Response events -------------------------------------------------- //
+
+
+function registerForAvatarResponse(callback) {
+	registerSocketCallback('avatarResponse', 
+		function(data) { 
+			callback(data['avatar']);
+		}
+	);
+}
 
 function registerForNewQuizResponse(callback) {
 	registerSocketCallback('newQuizResponse', 

@@ -4,7 +4,7 @@ function initializeUserManagement() {
 	registerForTryLoginResponse(onTryLoginResponse);
     registerForTryRegistrationResponse(onTryRegistrationResponse);
     registerForInvalidTokenResponse(onInvalidToken);
-
+    registerForAvatarResponse(onAvatarResponse);
     acquiretoken();
 }
 
@@ -59,6 +59,10 @@ function saveAvatar() {
     requestAvatarChange(currentToken, getCurrentAvatar());
 }
 
+function initializeAvatar() {
+    requestAvatar(currentToken);
+}
+
 // Server response handling ------------------------------------------------ //
 
 function onTryLoginResponse(token) {
@@ -92,6 +96,9 @@ function onInvalidToken(token) {
 	showPopupDelayed('loginPopup', 500);
 }
 
+function onAvatarResponse(avatar) {
+    loadAvatar(avatar);
+}
 
 // purely GUI related ------------------------------------------------------ //
 

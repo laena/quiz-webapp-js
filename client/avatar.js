@@ -6,17 +6,17 @@ avatarElements[3] = [1, 5, 'hair'];
 avatarElements[4] = [1, 6, 'accessoire'];
 
 window.onload = function() {
-    refresh();
+    refreshAvatar();
 }
 
-function refresh() {
+function refreshAvatar() {
 	for(var i=0; i<avatarElements.length; i++) {
         drawImage(i);
     }
 }
 
 function drawImage(index) {
-	$('#'+avatarElements[index][2]).attr('src', './avatars/' + avatarElements[index][2] + avatarElements[index][0] + '.png');
+	$('.'+avatarElements[index][2]).attr('src', './avatars/' + avatarElements[index][2] + avatarElements[index][0] + '.png');
 }
 
 function previous(index) {
@@ -46,5 +46,5 @@ function loadAvatar(avatar) {
 	avatarElements[3][0] = avatar.hair;
 	avatarElements[4][0] = avatar.accessoire;
 
-	refresh();
+	refreshAvatar();
 }

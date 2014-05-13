@@ -32,6 +32,7 @@ function initializeConnection(server) {
         socket.on('verifyAnswerRequest', handleVerifyAnswerRequest);
         socket.on('tryLoginRequest', handleTryLoginRequest);
         socket.on('tryRegistrationRequest', handleTryRegistrationRequest);
+        socket.on('themeChangeRequest', handleThemeChangeRequest);
         socket.on('avatarChangeRequest', handleAvatarChangeRequest);
         socket.on('avatarRequest', handleAvatarRequest);
     });
@@ -44,6 +45,16 @@ function send(message, parameters) {
 }
 
 // request handling -------------------------------------------------------- //
+
+function handleThemeChangeRequest(data) {
+    console.log('ChangeThemeRequest:');
+    console.log(data);
+    checkToken(data['token'], function(user) {
+        user.theme = data['theme'];
+        console.log(user.theme);
+        storage.storeUser(user);
+    });
+}
 
 function handleAvatarChangeRequest(data) {
     console.log('ChangeAvatarRequest:');
@@ -89,8 +100,8 @@ function handleVerifyAnswerRequest(data) {
 function handleTryLoginRequest(data) {
     console.log('TryLoginRequest:');
     console.log(data);
-    loginUser(data['username'], data['password'], function(token, avatar) {
-        send('tryLoginResponse', { token: token, avatar: avatar });
+    loginUser(data['username'], data['password'], function(token, avatar, theme) {
+        send('tryLoginResponse', { token: token, avatar: avatar, theme: theme });
     });
 }
 
@@ -121,7 +132,7 @@ function verifyAnswer(user, questionId, answerIndex, callback) {
 function loginUser(username, password, callback) {
     storage.loadUserByName(username, function(user) {
         if(user && user.password == password) {
-            callback(generateSessionToken(user), user.avatar);
+            callback(generateSessionToken(user), user.avatar, user.theme);
         } else {
             callback(null, null);
         }        
@@ -133,7 +144,7 @@ function registerUser(username, password, avatar, callback) {
         if(user) { // user already in the db -> new registration not possible
             callback(null);
         } else {
-            user = storage.createUser(username, avatar, password);
+            user = storage.createUser(username, avatar, 'standard', password);
             storage.storeUser(user);
             callback(generateSessionToken(user));
         }

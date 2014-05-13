@@ -55,13 +55,14 @@ function tryToRegisterUser() {
     }    
 }
 
-function saveAvatar() {
+function saveSettings() {
     requestAvatarChange(currentToken, getCurrentAvatar());
+    requestThemeChange(currentToken, getCurrentTheme());
 }
 
 // Server response handling ------------------------------------------------ //
 
-function onTryLoginResponse(token, avatar) {
+function onTryLoginResponse(token, avatar, theme) {
     console.log('onTryLoginResponse:' + token);
     if(token == null) {
         setElementText('loginTextLabel', 
@@ -71,6 +72,7 @@ function onTryLoginResponse(token, avatar) {
        localStorage.setItem('token', token);
        closePopup('loginPopup');
        loadAvatar(avatar);
+       if (theme != null) loadTheme(theme);
        showPage('startPage');
     }
 }

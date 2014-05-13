@@ -14,6 +14,12 @@ function sendMessage(messageName, parameters) {
 
 // Server Requests --------------------------------------------------------- //
 
+function requestThemeChange(token, theme) {
+	sendMessage('themeChangeRequest', {
+		token: token, theme: theme
+	});
+}
+
 function requestAvatarChange(token, avatar) {
 	sendMessage('avatarChangeRequest', {
 		token: token, avatar: avatar
@@ -87,7 +93,7 @@ function registerForVerifyAnswerResponse(callback) {
 
 function registerForTryLoginResponse(callback) {
 	registerSocketCallback('tryLoginResponse', 
-		function(data) { callback(data['token'], data['avatar']); }
+		function(data) { callback(data['token'], data['avatar'], data['theme']); }
 	);
 }
 
